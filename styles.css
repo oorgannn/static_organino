@@ -411,10 +411,11 @@ a.wip-button:hover {
 
 .projects-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 2rem;
+    justify-content: center;
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     margin-bottom: 40px; /* Creates space between last project card and the button */
 }
@@ -426,6 +427,7 @@ a.wip-button:hover {
     border: 2px solid rgba(var(--color-border-glass), 0.4);
     border-radius: 24px;
     padding: 2rem;
+    width: 300px;
     text-align: center;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
