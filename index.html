@@ -27,9 +27,9 @@
         <p class="explore-subtitle">what do you wanna explore?</p>
         <div class="explore-buttons">
             <button class="explore-button" onclick="navigateTo('projects')">Projects</button>
-            <button class="explore-button" onclick="navigateTo('suggestions')">Suggestions</button>
-            <button class="explore-button" onclick="navigateTo('tools')">Tools</button>
-            <button class="explore-button" onclick="navigateTo('thoughts')">Thoughts</button>
+            <button class="explore-button wip-button" title="Work in progress...">Suggestions</button>
+            <button class="explore-button wip-button" title="Work in progress...">Tools</button>
+            <button class="explore-button wip-button" title="Work in progress...">Thoughts</button>
         </div>
     </section>
 
@@ -45,24 +45,26 @@
             <div class="footer-section">
                 <h4>Home</h4>
                 <ul>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#features">Features</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" class="wip-button" title="Work in progress...">About</a></li>
+                    <li><a href="#" class="wip-button" title="Work in progress...">Features</a></li>
                 </ul>
             </div>
             
             <div class="footer-section">
                 <h4>Thoughts</h4>
                 <ul>
-                    <li><a href="#blog">Blog</a></li>
-                    <li><a href="#articles">Articles</a></li>
+                    <li><a href="#" class="wip-button" title="Work in progress...">Blog</a></li>
+                    <li><a href="#" class="wip-button" title="Work in progress...">Articles</a></li>
                 </ul>
             </div>
             
             <div class="footer-section">
                 <h4>Contact</h4>
                 <ul>
-                    <li><a href="#email">Email</a></li>
-                    <li><a href="#social">Social</a></li>
+                    <li><a href="mailto:oorgannn@gmail.com">Email</a></li>
+                    <li><a href="http://discordapp.com/users/228945269444706305" target="_blank">Discord</a></li>
+                    <li><a href="https://www.instagram.com/0rg4n/" target="_blank">Instagram</a></li>
                 </ul>
             </div>
         </div>
@@ -143,6 +145,13 @@
                     });
                 }
             });
+        });
+
+        // Handle URL hash on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash === '#explore') {
+                showExplore();
+            }
         });
     </script>
 </body>

@@ -305,6 +305,28 @@ nav a:hover::after {
     box-shadow: 0 8px 20px var(--color-shadow);
 }
 
+.wip-button {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.wip-button:hover {
+    transform: none;
+    box-shadow: none;
+    background: rgba(var(--color-border-glass), 0.25);
+}
+
+a.wip-button {
+    cursor: not-allowed;
+    opacity: 0.6;
+    text-decoration: none;
+    color: var(--color-text-footer);
+}
+
+a.wip-button:hover {
+    color: var(--color-text-footer);
+}
+
 .explore-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -387,24 +409,23 @@ nav a:hover::after {
     line-height: 1.5;
 }
 
-.projects-grid {
+.projects-list {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 2rem;
-    justify-content: center;
     width: 100%;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
+    margin-bottom: 40px; /* Creates space between last project card and the button */
 }
 
 .project-card {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    background: rgba(var(--color-border-glass), 0.25);
+    background: rgba(var(--color-bg-glass), 0.25);
     border: 2px solid rgba(var(--color-border-glass), 0.4);
     border-radius: 24px;
     padding: 2rem;
-    width: 300px;
     text-align: center;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -438,49 +459,37 @@ nav a:hover::after {
     line-height: 1.5;
 }
 
-.back-button {
-    margin-top: 5rem;
-    padding: 0.875rem 2.5rem;
+/* Button container – centers the button and adds extra top space */
+.button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 40px; /* Adjust this value if you want even more/less detachment */
+}
+
+/* Reuse your beautiful explore-button style for consistency */
+.button-container .explore-button {
+    padding: 1rem 2.5rem;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    background: rgba(var(--color-border-glass), 0.2);
-    color: var(--color-text-secondary);
-    border: 2px solid rgba(var(--color-border-glass), 0.5);
+    background: rgba(var(--color-border-glass), 0.25);
+    color: var(--color-text-accent);
+    border: 2px solid rgba(var(--color-border-glass), 0.4);
     border-radius: 50px;
     cursor: pointer;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 1.05rem;
     transition: all 0.3s ease;
-    animation: fadeInBlur 1s ease 0.8s backwards;
 }
 
-.back-button:hover {
-    background: rgba(var(--color-border-glass), 0.35);
-    transform: translateY(-2px);
+.button-container .explore-button:hover {
+    background: rgba(var(--color-border-glass), 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px var(--color-shadow);
 }
 
-@media (max-width: 768px) {
-    .explore-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .explore-title {
-        font-size: 2.5rem;
-    }
-
-    .explore-card {
-        padding: 2.5rem 1.5rem;
-    }
-
-    .explore-icon {
-        font-size: 3rem;
-    }
-
-    .explore-card h3 {
-        font-size: 1.5rem;
-    }
-}
+/* Remove the old .back-button styles – no longer needed */
+.back-button { display: none; }
 
 /* Footer */
 footer {
