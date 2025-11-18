@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>organ - Projects</title>
+    <link rel="icon" href="assets/favicon-192x192.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark still-background">
+    <header id="header">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">organ</div>
+        <nav>
+            <a href="index.html#home">Home</a>
+            <a href="index.html#explore">Explore</a>
+        </nav>
+    </header>
+
+    <section class="explore-section active" id="projects">
+        <h2 class="explore-title">Projects</h2>
+        <p class="explore-subtitle">Here are some of my projects</p>
+        <div class="projects-grid">
+            <div class="project-card" onclick="window.location.href='#'">
+                <img src="assets/language-space-square.png" alt="Language Space Icon" class="project-icon">
+                <h3>Language Space</h3>
+                <p>A Discord server for language learners and enthusiasts.</p>
+            </div>
+            <div class="project-card" onclick="window.location.href='#'">
+                <h3>Project 2</h3>
+                <p>A short description of the second project.</p>
+            </div>
+        </div>
+        <button class="explore-button" onclick="window.location.href='index.html#explore'">Back to Explore</button>
+    </section>
+
+    <script>
+        // Add scroll effect to header
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
