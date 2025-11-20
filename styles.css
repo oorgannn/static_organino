@@ -505,8 +505,9 @@ footer {
 .footer-content {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 3rem;
     margin-bottom: 3rem;
 }
@@ -555,6 +556,19 @@ footer {
     border-top: 1px solid rgba(var(--color-border-glass), 0.3);
     color: var(--color-text-footer);
     font-size: 0.9rem;
+}
+
+.footer-section ul.social-icons {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-section ul.social-icons li {
+    margin-bottom: 0;
+}
+
+.footer-section ul.social-icons li a {
+    font-size: 1.5rem;
 }
 
 /* Mobile Responsive */
