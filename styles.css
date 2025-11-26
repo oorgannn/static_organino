@@ -10,10 +10,24 @@
     --color-text-primary: #2c3e50;
     --color-text-secondary: #4a5a4a;
     --color-text-muted: #555566;
-    --color-text-footer: #888899;
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-shadow-hover: rgba(0, 0, 0, 0.15);
     --shadow-highlight: rgba(224, 212, 253, 0.4);
+
+    /* New variables for dark theme */
+    --dark-bg: #1a1a1a;
+    --dark-surface: #2a2a2a;
+    --dark-card-bg: #333333;
+    --dark-border: #444444;
+    --dark-text: #e0e0e0;
+    --dark-text-muted: #b0b0b0;
+    --dark-accent: #8e2de2; /* A vibrant purple for highlights */
+    --dark-shadow: rgba(0, 0, 0, 0.5);
+    --dark-hover-glow: rgba(142, 45, 226, 0.3); /* Glow for hover effects */
+    --sidebar-width: 250px; /* Default sidebar width */
+    --header-height: 0px; /* Dynamic header height set by JS */
+    --footer-height: 0px; /* Dynamic footer height set by JS */
+    --mobile-header-height: 0px; /* Dynamic mobile header height set by JS */
 }
 
 body.dark {
@@ -418,6 +432,7 @@ a.wip-button:hover {
     max-width: 1200px;
     margin: 0 auto;
     margin-bottom: 40px; /* Creates space between last project card and the button */
+    align-items: stretch;
 }
 
 .project-card {
@@ -488,6 +503,35 @@ a.wip-button:hover {
     background: rgba(var(--color-border-glass), 0.4);
     transform: translateY(-4px);
     box-shadow: 0 10px 30px var(--color-shadow);
+}
+
+/* Back button container for My Picks page */
+.back-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+    padding-top: 3rem;
+    position: relative;
+}
+
+/* Add subtle top border for visual separation */
+.back-button-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.1) 20%,
+        rgba(255, 255, 255, 0.1) 80%,
+        transparent
+    );
 }
 
 /* Remove the old .back-button styles – no longer needed */
@@ -604,3 +648,633 @@ footer {
         font-size: 1.3rem;
     }
 }
+#my-picks h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text-accent);
+    text-align: left;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid;
+    border-image: linear-gradient(90deg, var(--pesca), var(--menta)) 1;
+    text-shadow: 0 2px 10px var(--shadow-highlight);
+}
+
+
+
+/* My Picks Page Layout */
+.picks-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.picks-sidebar {
+    width: 100%; /* Fill the parent column */
+    position: sticky;
+    top: 120px; /* Adjust this value based on your navbar height */
+    background: rgba(var(--color-bg-glass), 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px var(--color-shadow);
+}
+
+.picks-sidebar nav ul {
+    list-style: none;
+}
+
+.picks-sidebar nav ul li a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.picks-sidebar nav ul li a:hover {
+    background: rgba(var(--color-border-glass), 0.2);
+    color: var(--color-text-accent);
+}
+
+.picks-content {
+    /* The .col-md-9 class handles the width */
+    padding-left: 2rem;
+}
+
+@media (max-width: 768px) {
+    .picks-container {
+        flex-direction: column;
+    }
+
+    .picks-sidebar {
+        width: 100%;
+        position: static;
+        margin-bottom: 2rem;
+    }
+
+    .picks-sidebar nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .picks-content {
+        padding-left: 0;
+    }
+}
+
+
+/* Custom Bootstrap Styles */
+
+.card.project-card,
+.card.pick-item {
+    max-width: 300px; /* Limit card width */
+    margin: 0 auto; /* Center the card within its column */
+    background-color: rgba(var(--color-bg-glass), 0.25);
+    border: 1px solid rgba(var(--color-border-glass), 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: var(--color-text-primary);
+}
+
+.card.project-card .card-title,
+.card.pick-item .card-title {
+    color: var(--color-text-accent);
+}
+
+.card.project-card .card-text,
+.card.pick-item .card-text {
+    color: var(--color-text-secondary);
+}
+
+.nav-pills .nav-link {
+    color: var(--color-text-secondary);
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: rgba(var(--color-border-glass), 0.2);
+    color: var(--color-text-accent);
+}
+
+
+/* --- NEW MY PICKS PAGE STYLES (Glassmorphic Design) --- */
+
+.picks-page-container {
+    min-height: 100vh;
+    color: var(--color-text-primary);
+    position: relative;
+}
+
+/* Page Header Section (Above Sidebar/Content) */
+.picks-page-header {
+    text-align: center;
+    padding: 5rem 5% 3rem;
+    margin-top: var(--header-height);
+}
+
+.picks-page-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #1a2a1a;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.picks-page-subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Mobile Sidebar Toggle Arrow Button */
+.sidebar-toggle-arrow {
+    display: none; /* Hidden by default, shown on mobile */
+    position: fixed;
+    left: 0;
+    top: calc(var(--header-height) + var(--page-header-height) + 3rem); /* Position below page header */
+    width: 48px;
+    height: 48px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(var(--color-bg-glass), 0.4);
+    border: 2px solid rgba(var(--color-border-glass), 0.4);
+    border-left: none;
+    border-radius: 0 24px 24px 0;
+    color: var(--color-text-accent);
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 90;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 4px 16px var(--color-shadow);
+}
+
+.sidebar-toggle-arrow:hover {
+    background: rgba(var(--color-bg-glass), 0.6);
+    transform: translateX(4px);
+    box-shadow: 6px 6px 20px var(--color-shadow-hover);
+}
+
+.sidebar-toggle-arrow:active {
+    transform: translateX(2px) scale(0.95);
+}
+
+.sidebar-toggle-arrow.sidebar-open {
+    left: 250px;
+    transform: translateX(0);
+    background: rgba(var(--color-bg-glass), 0.6);
+}
+
+.sidebar-toggle-arrow i {
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+/* Glassmorphic Sidebar Styling */
+.picks-sidebar-new {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    padding: 0 1rem 1rem 1rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(var(--color-bg-glass), 0.3);
+    border-right: 1px solid rgba(var(--color-border-glass), 0.3);
+    border-radius: 16px;
+    position: fixed;
+    top: calc(var(--header-height) + var(--page-header-height) + 3rem);
+    left: 3rem;
+    bottom: auto;
+    height: fit-content;
+    max-height: calc(100vh - var(--header-height) - 4rem);
+    overflow-y: auto;
+    z-index: 50;
+    transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.3s ease;
+}
+
+/* Sticky state: sidebar moves up to just below header when scrolled */
+.picks-sidebar-new.sticky {
+    top: calc(var(--header-height) + 1.5rem);
+}
+
+/* Smooth transition when footer is visible */
+.picks-sidebar-new.footer-visible {
+    transition: max-height 0.15s ease-out, top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.picks-sidebar-new.active {
+    transform: translateX(0);
+}
+
+.picks-sidebar-nav {
+    padding-top: 0;
+}
+
+.sidebar-section {
+    margin-bottom: 2rem;
+}
+
+.sidebar-title {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+    font-weight: 600;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-list li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0.75rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--pesca), var(--lavanda));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.sidebar-link i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    transition: color 0.3s ease;
+}
+
+.sidebar-link span {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: rgba(var(--color-border-glass), 0.3);
+    color: var(--color-text-accent);
+    box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+.sidebar-link:hover::before,
+.sidebar-link.active::before {
+    opacity: 0.2;
+}
+
+.sidebar-link:hover i,
+.sidebar-link.active i {
+    color: var(--color-text-accent);
+}
+
+/* Main Content Styling */
+.picks-main-content {
+    margin-top: calc(var(--header-height) + var(--page-header-height) + 2rem);
+    padding: 1rem 5% 3rem;
+    min-height: calc(100vh - var(--header-height) - var(--page-header-height));
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.picks-section {
+    margin-bottom: 4rem;
+}
+
+.picks-section h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-text-accent);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.picks-section h2 i {
+    margin-right: 1rem;
+    color: #2c3e50;
+    font-size: 2.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Grid */
+.picks-grid-new {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+/* Glassmorphic Pick Cards */
+.pick-card {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(var(--color-bg-glass), 0.25);
+    border: 2px solid rgba(var(--color-border-glass), 0.4);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px var(--color-shadow);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+.pick-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--menta), var(--cielo));
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    z-index: -1;
+}
+
+.pick-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px var(--color-shadow-hover);
+    border-color: rgba(var(--color-border-glass), 0.6);
+}
+
+.pick-card:hover::before {
+    width: 500px;
+    height: 500px;
+}
+
+.pick-card-img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    background: linear-gradient(135deg, var(--panna), var(--pesca));
+}
+
+.pick-card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pick-card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--color-text-accent);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.pick-card-description {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    flex-grow: 1;
+    margin: 0;
+}
+
+
+/* Responsive Design for My Picks */
+@media (max-width: 992px) {
+    :root {
+        --sidebar-width: 220px;
+    }
+
+    .picks-page-header {
+        padding: 4rem 5% 2.5rem;
+    }
+
+    .picks-page-title {
+        font-size: 3rem;
+    }
+
+    .picks-page-subtitle {
+        font-size: 1.15rem;
+    }
+
+    .picks-sidebar-new {
+        width: var(--sidebar-width);
+        left: 2rem;
+        top: calc(var(--header-height) + var(--page-header-height) + 3rem);
+        bottom: auto;
+        max-height: calc(100vh - var(--header-height) - 4rem);
+        padding: 0 0.75rem 1rem 0.75rem;
+    }
+
+    /* Maintain sticky behavior on tablets */
+    .picks-sidebar-new.sticky {
+        top: calc(var(--header-height) + 1.5rem);
+    }
+
+    .picks-main-content {
+        padding: 1rem 5% 2.5rem;
+        max-width: 1200px;
+    }
+
+    .picks-section h2 {
+        font-size: 1.8rem;
+    }
+
+    .picks-section h2 i {
+        font-size: 2.2rem;
+    }
+
+    .picks-grid-new {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .pick-card-img {
+        height: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .picks-page-header {
+        padding: 3rem 5% 2rem;
+    }
+
+    .picks-page-title {
+        font-size: 2.5rem;
+    }
+
+    .picks-page-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .sidebar-toggle-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .picks-sidebar-new {
+        position: fixed;
+        transform: translateX(-100%);
+        width: 250px;
+        left: 0;
+        top: calc(var(--header-height) + var(--page-header-height) + 2rem);
+        bottom: auto;
+        height: fit-content;
+        max-height: calc(100vh - var(--header-height) - var(--page-header-height) - 2rem);
+        z-index: 100;
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 4px 0 16px var(--color-shadow);
+        border-radius: 0 16px 16px 0;
+    }
+
+    .picks-sidebar-new.active {
+        transform: translateX(0);
+    }
+
+    .picks-main-content {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+        margin-top: calc(var(--header-height) + var(--page-header-height) + 1rem);
+        padding: 1rem 5% 1.5rem;
+    }
+
+    .picks-page-container {
+        padding-top: 0;
+    }
+
+    .picks-section {
+        margin-bottom: 3rem;
+    }
+
+    .picks-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .picks-section h2 i {
+        font-size: 2rem;
+    }
+
+    .picks-grid-new {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .pick-card-img {
+        height: 260px;
+    }
+
+    .pick-card-body {
+        padding: 1.25rem;
+    }
+
+    /* Adjust back button spacing for tablets */
+    .back-button-container {
+        margin-top: 4rem;
+        margin-bottom: 2.5rem;
+        padding-top: 2.5rem;
+    }
+
+    .back-button-container::before {
+        left: 7%;
+        right: 7%;
+    }
+}
+
+@media (max-width: 480px) {
+    .picks-page-header {
+        padding: 2.5rem 5% 1.5rem;
+    }
+
+    .picks-page-title {
+        font-size: 2rem;
+    }
+
+    .picks-page-subtitle {
+        font-size: 1rem;
+    }
+
+    .picks-sidebar-new {
+        width: 75%;
+    }
+
+    .picks-main-content {
+        padding: 1rem 1rem 1.5rem;
+    }
+
+    .picks-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .picks-section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .picks-section h2 i {
+        font-size: 1.8rem;
+        margin-right: 0.75rem;
+    }
+
+    .picks-grid-new {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .pick-card-img {
+        height: 350px;
+    }
+
+    .pick-card-body {
+        padding: 1.25rem;
+    }
+
+    .pick-card-title {
+        font-size: 1.2rem;
+    }
+
+    .pick-card-description {
+        font-size: 0.9rem;
+    }
+
+    /* Adjust back button spacing for mobile */
+    .back-button-container {
+        margin-top: 3.5rem;
+        margin-bottom: 2rem;
+        padding-top: 2.5rem;
+    }
+
+    .back-button-container::before {
+        left: 5%;
+        right: 5%;
+    }
+}
+
+

@@ -7,34 +7,51 @@
     <link rel="icon" href="assets/favicon-192x192.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        /* Custom Bootstrap overrides */
+        :root {
+            --bs-body-bg: none;
+        }
+    </style>
 </head>
-<body class="dark still-background">
+<body>
     <header id="header">
         <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">organ</div>
         <nav>
             <a href="index.html#home">Home</a>
-            <a href="index.html#explore">Explore</a>
+            <a href="#explore" onclick="showExplore(); return false;">Explore</a>
             <a href="https://organino.org/blog" target="_blank">Blog</a>
         </nav>
     </header>
 
     <section class="explore-section active" id="projects">
-        <h2 class="explore-title">Projects</h2>
+        <h1 class="explore-title">Projects</h1>
         <p class="explore-subtitle">Here are some projects i'm currently working on</p>
-        <div class="projects-list">
-            <div class="project-card" onclick="window.open('https://discord.gg/DfQESyV26V', '_blank')">
-                <img src="assets/language-space-square.png" alt="Language Space Icon" class="project-icon">
-                <h3>Language Space</h3>
-                <p>A Discord server for language learners and enthusiasts.</p>
-            </div>
-            <div class="project-card" onclick="window.location.href='#'">
-                <h3>This website!</h3>
-                <p>So be patient, i'm working on it.</p>
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+                <div class="col">
+                    <div class="card project-card h-100" onclick="window.open('https://discord.gg/DfQESyV26V', '_blank')">
+                        <img src="assets/language-space-square.png" class="card-img-top project-icon" alt="Language Space Icon">
+                        <div class="card-body">
+                            <h5 class="card-title">Language Space</h5>
+                            <p class="card-text">A Discord server for language learners and enthusiasts.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card project-card h-100" onclick="window.location.href='#'">
+                        <div class="card-body">
+                            <h5 class="card-title">This website!</h5>
+                            <p class="card-text">So be patient, i'm working on it.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-            <div class="back-button-container">
-                <button class="explore-button" onclick="window.location.href='/index.html#explore'">Back to Explore</button>
-            </div>
+        <div class="back-button-container">
+            <button class="explore-button" onclick="window.location.href='index.html#explore'">Back to Explore</button>
+        </div>
     </section>
 
     <footer>
@@ -58,7 +75,7 @@
             <p>© 2025 organ. All rights reserved.</p>
         </div>
     </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
         // Add scroll effect to header
         const header = document.getElementById('header');
@@ -70,6 +87,21 @@
                 header.classList.remove('scrolled');
             }
         });
+
+        function adjustContentPadding() {
+            const header = document.getElementById('header');
+            if (window.getComputedStyle(header).position === 'fixed') {
+                const headerHeight = header.offsetHeight;
+                const mainContent = document.querySelectorAll('.hero, .explore-section.active, main.explore-section.active, .picks-container');
+                mainContent.forEach(element => {
+                    element.style.paddingTop = `${headerHeight}px`;
+                });
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', adjustContentPadding);
+        window.addEventListener('resize', adjustContentPadding);
+        window.addEventListener('scroll', adjustContentPadding);
     </script>
 </body>
 </html>

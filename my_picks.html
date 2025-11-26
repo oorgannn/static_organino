@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>organ - My Picks</title>
+    <link rel="icon" href="assets/favicon-192x192.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Custom styles for the new My Picks page */
+        :root {
+            --bs-body-bg: none;
+        }
+
+        /* Ensure background animation continues smoothly */
+        body {
+            will-change: background-position;
+            animation: gradientShift 20s ease infinite;
+        }
+
+        /* Prevent animation restart by isolating DOM changes */
+        * {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        /* Search Bar Container */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            padding: 0 1rem;
+        }
+
+        .search-bar-wrapper {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(var(--color-bg-glass), 0.4);
+            border: 2px solid rgba(var(--color-border-glass), 0.5);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 8px 32px var(--color-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar-wrapper:focus-within {
+            border-color: var(--lavanda);
+            box-shadow: 0 8px 40px var(--shadow-highlight);
+            background: rgba(var(--color-bg-glass), 0.5);
+        }
+
+        .search-icon {
+            color: var(--color-text-muted);
+            font-size: 1.2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 1.05rem;
+            color: var(--color-text-accent);
+            font-weight: 500;
+        }
+
+        .search-input::placeholder {
+            color: var(--color-text-muted);
+            opacity: 0.7;
+        }
+
+        .search-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .category-filter {
+            background: rgba(var(--color-border-glass), 0.3);
+            border: 1px solid rgba(var(--color-border-glass), 0.4);
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            color: var(--color-text-accent);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .category-filter:hover {
+            background: rgba(var(--color-border-glass), 0.5);
+            border-color: var(--lavanda);
+        }
+
+        .clear-search {
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clear-search.active {
+            display: flex;
+        }
+
+        .clear-search:hover {
+            color: var(--color-text-accent);
+            transform: rotate(90deg);
+        }
+
+        /* Results Info */
+        .results-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .results-info .count {
+            color: var(--color-text-accent);
+            font-weight: 600;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            display: none;
+        }
+
+        .empty-state.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: var(--color-text-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--color-text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Pick Cards with fade animation */
+        .pick-item {
+            animation: fadeInUp 0.5s ease backwards;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .pick-item.hidden {
+            display: none;
+        }
+
+        /* Section visibility */
+        .picks-section.hidden {
+            display: none;
+        }
+
+        /* ==========================================
+           MOSAIC GRID LAYOUT - Card Grid System
+           ==========================================
+           This creates a responsive grid that:
+           - Centers cards horizontally on the page
+           - Automatically adjusts columns based on screen width
+           - Maintains consistent spacing between cards
+
+           Responsive behavior:
+           - Desktop (>992px): Cards are 210px x 300px
+           - Tablet (768-992px): Cards are 200px x 290px
+           - Mobile (480-768px): Cards are 190px x 280px
+           - Small mobile (<480px): Cards are 170px x 260px
+
+           The grid uses CSS auto-fit to create as many
+           columns as will fit, then centers them.
+           ========================================== */
+        .mosaic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 210px));
+            justify-content: center;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Enhanced card styling - Hover reveal design */
+        .card.project-card {
+            width: 210px;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card.project-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Card image - always visible */
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.4s ease;
+        }
+
+        .card.project-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        /* Card overlay - hidden by default, appears on hover */
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            z-index: 2;
+        }
+
+        .card.project-card:hover .card-overlay {
+            opacity: 1;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Overlay content animation */
+        .card-overlay-content {
+            transform: translateY(15px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card.project-card:hover .card-overlay-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Card body - now inside overlay, hidden by default */
+        .card-body {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .card-title {
+            display: none !important;
+        }
+
+        /* See More Button - hidden by default */
+        .see-more-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .see-more-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .see-more-button:active {
+            transform: translateY(0);
+        }
+
+        .see-more-button i {
+            transition: transform 0.3s ease;
+        }
+
+        .see-more-button:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Hide card descriptions */
+        .card-text {
+            display: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .mosaic-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 200px));
+                gap: 1.25rem;
+            }
+
+            .card.project-card {
+                width: 200px;
+                height: 290px;
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+            }
+
+            .see-more-button {
+                font-size: 0.88rem;
+                padding: 0.6rem 1.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mosaic-grid {
+                grid-template-columns: repeat(auto-fit, minmax(170px, 190px));
+                gap: 1rem;
+            }
+
+            .card.project-card {
+                width: 190px;
+                height: 280px;
+            }
+
+            .card-title {
+                font-size: 1.15rem;
+            }
+
+            .see-more-button {
+                font-size: 0.85rem;
+                padding: 0.55rem 1.15rem;
+            }
+
+            .search-bar-wrapper {
+                flex-wrap: wrap;
+                padding: 1rem 1.25rem;
+                border-radius: 30px;
+            }
+
+            .search-controls {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+            }
+
+            .category-filter {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mosaic-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 170px));
+                gap: 1rem;
+            }
+
+            .card.project-card {
+                width: 170px;
+                height: 260px;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .card-overlay-content {
+                gap: 1rem;
+            }
+
+            .see-more-button {
+                font-size: 0.82rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .search-container {
+                margin-bottom: 2rem;
+            }
+
+            .search-bar-wrapper {
+                padding: 0.75rem 1rem;
+            }
+
+            .search-input {
+                font-size: 0.95rem;
+            }
+
+            .category-filter {
+                font-size: 0.85rem;
+                padding: 0.35rem 0.75rem;
+            }
+        }
+
+        /* Smooth fade animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading animation for search */
+        .searching {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* ==========================================
+           MODAL POPUP STYLES
+           ==========================================
+           These styles control the modal popups that
+           appear when you click on a card.
+
+           How modals work:
+           1. By default, modals are hidden (opacity: 0, visibility: hidden)
+           2. When .active class is added, modal fades in
+           3. Modal has z-index: 9999 to appear above everything
+           4. Clicking outside closes the modal (handled by JavaScript)
+           5. ESC key also closes the modal (handled by JavaScript)
+
+           Key classes:
+           - .modal-overlay: The dark background
+           - .modal-content: The white card containing info
+           - .modal-close: The X button in top-right
+           - .modal-overlay.active: Makes modal visible
+
+           All four categories (books, movies, series, games)
+           share the same modal structure and styling.
+           ========================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2.5rem;
+            padding: 2.5rem;
+        }
+
+        .modal-book-cover {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+            object-fit: cover;
+            position: sticky;
+            top: 0;
+        }
+
+        .modal-book-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            color: #fff;
+        }
+
+        .modal-book-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .modal-book-author {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin: -0.5rem 0 0 0;
+        }
+
+        .modal-section {
+            margin-top: 0.5rem;
+        }
+
+        .modal-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-section-title i {
+            font-size: 0.9rem;
+            color: var(--lavanda);
+        }
+
+        .modal-book-description,
+        .modal-personal-note {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            margin: 0;
+        }
+
+        .modal-book-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .modal-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .modal-link i {
+            font-size: 1rem;
+        }
+
+        .modal-link.primary {
+            background: linear-gradient(135deg, #FF9900, #FFB84D);
+            border-color: transparent;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .modal-link.primary:hover {
+            background: linear-gradient(135deg, #FFB84D, #FFC266);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 24px rgba(255, 153, 0, 0.5);
+            color: #000;
+        }
+
+        /* Responsive Modal */
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .modal-book-cover {
+                max-width: 280px;
+                margin: 0 auto;
+                position: relative;
+            }
+
+            .modal-book-title {
+                font-size: 1.65rem;
+            }
+
+            .modal-book-author {
+                font-size: 1.1rem;
+            }
+
+            .modal-close {
+                width: 40px;
+                height: 40px;
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-overlay {
+                padding: 0.5rem;
+            }
+
+            .modal-content {
+                border-radius: 20px;
+                max-height: 95vh;
+            }
+
+            .modal-body {
+                padding: 1.75rem 1.25rem;
+                gap: 1.5rem;
+            }
+
+            .modal-book-cover {
+                max-width: 240px;
+            }
+
+            .modal-book-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-book-author {
+                font-size: 1rem;
+            }
+
+            .modal-section-title {
+                font-size: 1rem;
+            }
+
+            .modal-book-description,
+            .modal-personal-note {
+                font-size: 0.95rem;
+            }
+
+            .modal-link {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.1rem;
+            }
+        }
+
+        /* Prevent body scroll when modal is open */
+        body.modal-open {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">organ</div>
+        <nav>
+            <a href="index.html#home">Home</a>
+            <a href="index.html#explore">Explore</a>
+            <a href="https://organino.org/blog" target="_blank">Blog</a>
+        </nav>
+    </header>
+
+    <!-- Page Header Section -->
+    <div class="picks-page-header">
+        <h1 class="picks-page-title">My Picks</h1>
+        <p class="picks-page-subtitle">A curated collection of my favorite books, movies, series, and games</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-bar-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input
+                type="text"
+                class="search-input"
+                id="searchInput"
+                placeholder="Search for books, movies, series, or games..."
+                autocomplete="off"
+            >
+            <div class="search-controls">
+                <select class="category-filter" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="books">Books</option>
+                    <option value="movies">Movies</option>
+                    <option value="series">Series</option>
+                    <option value="games">Games</option>
+                </select>
+                <button class="clear-search" id="clearSearch" title="Clear search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Info -->
+    <div class="results-info" id="resultsInfo"></div>
+
+    <!-- Main Content Area -->
+    <main class="picks-main-content">
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            <i class="fas fa-search"></i>
+            <h3>No results found</h3>
+            <p>Try adjusting your search or filter to find what you're looking for</p>
+        </div>
+
+        <!-- Books Section -->
+        <section id="books" class="picks-section">
+            <h2><i class="fas fa-book"></i> Books</h2>
+            <div class="mosaic-grid" id="booksGrid">
+
+                <!-- ========================================
+                     PASTE NEW BOOK CARDS HERE
+                     ========================================
+                     Instructions:
+                     1. Run content_generator.py and select a book to add
+                     2. Copy the "HTML Card Code" from the generator output
+                     3. Paste it right here (above or below existing cards)
+                     4. Save this file and refresh your browser
+                     5. The new book card will appear in the Books section
+
+                     Example card structure (DO NOT copy this - use content_generator.py):
+                     <div class="pick-item" data-category="books" data-title="Book Title - Author Name" data-description="Short description...">
+                         <div class="card project-card">
+                             <img src="assets/books/cover.jpg" class="card-img-top" alt="Book Title Cover">
+                             <div class="card-overlay">
+                                 <div class="card-overlay-content">
+                                     <div class="card-body">
+                                         <h5 class="card-title">Book Title - Author Name</h5>
+                                         <button class="see-more-button">
+                                             <span>See More</span>
+                                             <i class="fas fa-arrow-right"></i>
+                                         </button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+
+                     IMPORTANT: Don't forget to also add the corresponding JavaScript data
+                     in the booksData object below (search for "PASTE NEW BOOK DATA HERE")
+                     ======================================== -->
+
+                <div class="pick-item" data-category="books" data-title="Anelli nell&#39;Io - Douglas R. Hofstadter" data-description="An exploration of consciousness and self-awareness through strange loops and recursion.">
+                    <div class="card project-card">
+                        <img src="assets/books/anelli_nell_io.jpg" class="card-img-top" alt="Anelli nell&#39;Io Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Anelli nell&#39;Io - Douglas R. Hofstadter</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="books" data-title="Come crescere figli sereni - Gabriella Tupini" data-description="A guide to raising emotionally healthy children through positive discipline and empathy.">
+                    <div class="card project-card">
+                        <img src="assets/books/come_crescere_figli_sereni.jpg" class="card-img-top" alt="Come crescere figli sereni Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Come crescere figli sereni - Gabriella Tupini</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="books" data-title="Gödel, Escher, Bach: An Eternal Golden Braid - Douglas R. Hofstadter" data-description="A Pulitzer Prize-winning exploration of mathematics, art, music, and consciousness.">
+                    <div class="card project-card">
+                        <img src="assets/books/geb_hofstadter.jpg" class="card-img-top" alt="Gödel, Escher, Bach: An Eternal Golden Braid Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Gödel, Escher, Bach: An Eternal Golden Braid - Douglas R. Hofstadter</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="books" data-title="La vera interpretazione dei sogni - Gabriella Tupini" data-description="A guide to understanding dreams through personal and deep psychological journey.">
+                    <div class="card project-card">
+                        <img src="assets/books/la_vera_interpretazione_dei_sogni.jpg" class="card-img-top" alt="La vera interpretazione dei sogni Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">La vera interpretazione dei sogni - Gabriella Tupini</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="books" data-title="Nella tana del lupo - Gabriella Tupini" data-description="An autobiographical work exploring the journey to awareness and eliminating suffering.">
+                    <div class="card project-card">
+                        <img src="assets/books/nella_tana_del_lupo.jpg" class="card-img-top" alt="Nella tana del lupo Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Nella tana del lupo - Gabriella Tupini</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="books" data-title="Scoprire gli abusi - Gabriella Tupini" data-description="A psychological exploration of abuse and recovery with unique methodology.">
+                    <div class="card project-card">
+                        <img src="assets/books/scoprire_gli_abusi.jpg" class="card-img-top" alt="Scoprire gli abusi Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Scoprire gli abusi - Gabriella Tupini</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Movies Section -->
+        <section id="movies" class="picks-section">
+            <h2><i class="fas fa-film"></i> Movies</h2>
+            <div class="mosaic-grid" id="moviesGrid">
+
+                <!-- ========================================
+                     PASTE NEW MOVIE CARDS HERE
+                     ========================================
+                     Instructions:
+                     1. Run content_generator.py and select a movie to add
+                     2. Copy the "HTML Card Code" from the generator output
+                     3. Paste it right here (above or below existing cards)
+                     4. Save this file and refresh your browser
+                     5. The new movie card will appear in the Movies section
+
+                     Example card structure (DO NOT copy this - use content_generator.py):
+                     <div class="pick-item" data-category="movies" data-title="Movie Title" data-description="Short description...">
+                         <div class="card project-card">
+                             <img src="assets/movies/poster.jpg" class="card-img-top" alt="Movie Title Cover">
+                             <div class="card-overlay">
+                                 <div class="card-overlay-content">
+                                     <div class="card-body">
+                                         <h5 class="card-title">Movie Title</h5>
+                                         <button class="see-more-button">
+                                             <span>See More</span>
+                                             <i class="fas fa-arrow-right"></i>
+                                         </button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+
+                     IMPORTANT: Don't forget to also add the corresponding JavaScript data
+                     in the moviesData object below (search for "PASTE NEW MOVIE DATA HERE")
+                     ======================================== -->
+
+                <div class="pick-item" data-category="movies" data-title="Detachment" data-description="A chronicle of three weeks in the lives of several high school teachers, administrators and students through the eyes of substitute teacher Henry Barthes.">
+                    <div class="card project-card">
+                        <img src="assets/movies/detachment_2011_cover.jpg" class="card-img-top" alt="Detachment Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Detachment</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="movies" data-title="Monster" data-description="Japanese drama about a single mother who suspects her fifth-grade son&#39;s teacher of bullying after the boy exhibits strange behavior. The film tells the same story from three different perspectives (the mother&#39;s, the teacher&#39;s and the children&#39;s) gradually revealing a more complex truth about what&#39;s really happening.">
+                    <div class="card project-card">
+                        <img src="assets/movies/monster_2023_cover.jpg" class="card-img-top" alt="Monster Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Monster</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Series Section -->
+        <section id="series" class="picks-section">
+            <h2><i class="fas fa-tv"></i> Series</h2>
+            <div class="mosaic-grid" id="seriesGrid">
+
+                <!-- ========================================
+                     PASTE NEW SERIES CARDS HERE
+                     ========================================
+                     Instructions:
+                     1. Run content_generator.py and select a series to add
+                     2. Copy the "HTML Card Code" from the generator output
+                     3. Paste it right here (above or below existing cards)
+                     4. Save this file and refresh your browser
+                     5. The new series card will appear in the Series section
+
+                     Example card structure (DO NOT copy this - use content_generator.py):
+                     <div class="pick-item" data-category="series" data-title="Series Title" data-description="Short description...">
+                         <div class="card project-card">
+                             <img src="assets/series/poster.jpg" class="card-img-top" alt="Series Title Cover">
+                             <div class="card-overlay">
+                                 <div class="card-overlay-content">
+                                     <div class="card-body">
+                                         <h5 class="card-title">Series Title</h5>
+                                         <button class="see-more-button">
+                                             <span>See More</span>
+                                             <i class="fas fa-arrow-right"></i>
+                                         </button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+
+                     IMPORTANT: Don't forget to also add the corresponding JavaScript data
+                     in the seriesData object below (search for "PASTE NEW SERIES DATA HERE")
+                     ======================================== -->
+
+                <!-- Placeholder message - Series cards will be added later -->
+                <p style="color: rgba(255, 255, 255, 0.6); text-align: center; padding: 3rem; font-style: italic;">
+                    I will add something here...
+                </p>
+
+                <!-- Series cards commented out for now - will be populated later
+                <div class="pick-item" data-category="series" data-title="Series Title 1" data-description="An addictive binge-worthy series with complex characters and plot twists.">
+                    <div class="card project-card">
+                        <img src="https://via.placeholder.com/300x400/e0d4fd/2c3e50?text=Series+Cover" class="card-img-top" alt="Series Title 1 Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Series Title 1</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="series" data-title="Series Title 2" data-description="A groundbreaking show that changed television storytelling forever.">
+                    <div class="card project-card">
+                        <img src="https://via.placeholder.com/300x400/a7f3d0/2c3e50?text=Series+Cover" class="card-img-top" alt="Series Title 2 Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Series Title 2</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="series" data-title="Series Title 3" data-description="Compelling drama with exceptional writing and performances.">
+                    <div class="card project-card">
+                        <img src="https://via.placeholder.com/300x400/ffd7ba/2c3e50?text=Series+Cover" class="card-img-top" alt="Series Title 3 Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Series Title 3</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-item" data-category="series" data-title="Series Title 4" data-description="A thrilling series that keeps you guessing until the very end.">
+                    <div class="card project-card">
+                        <img src="https://via.placeholder.com/300x400/bfdbfe/2c3e50?text=Series+Cover" class="card-img-top" alt="Series Title 4 Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Series Title 4</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                -->
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="games" class="picks-section">
+            <h2><i class="fas fa-gamepad"></i> Games</h2>
+            <div class="mosaic-grid" id="gamesGrid">
+
+                <!-- ========================================
+                     PASTE NEW GAME CARDS HERE
+                     ========================================
+                     Instructions:
+                     1. Run content_generator.py and select a game to add
+                     2. Copy the "HTML Card Code" from the generator output
+                     3. Paste it right here (above or below existing cards)
+                     4. Save this file and refresh your browser
+                     5. The new game card will appear in the Games section
+
+                     Example card structure (DO NOT copy this - use content_generator.py):
+                     <div class="pick-item" data-category="games" data-title="Game Title" data-description="Short description...">
+                         <div class="card project-card">
+                             <img src="assets/games/cover.jpg" class="card-img-top" alt="Game Title Cover">
+                             <div class="card-overlay">
+                                 <div class="card-overlay-content">
+                                     <div class="card-body">
+                                         <h5 class="card-title">Game Title</h5>
+                                         <button class="see-more-button">
+                                             <span>See More</span>
+                                             <i class="fas fa-arrow-right"></i>
+                                         </button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+
+                     IMPORTANT: Don't forget to also add the corresponding JavaScript data
+                     in the gamesData object below (search for "PASTE NEW GAME DATA HERE")
+                     ======================================== -->
+
+                <!-- Generated: 2025-11-26 19:14:59 -->
+                <div class="pick-item" data-category="games" data-title="Wednesdays" data-description="Wednesdays is a narrative game published by ARTE France that addresses child sexual abuse through an uplifting, hopeful story. The game follows Tim, a man who experienced (as many people) sexual abuse as a child, whose repressed memories resurface while playing Orco Park, a theme park simulator from his childhood.">
+                    <div class="card project-card">
+                        <img src="assets\games\wednesdays-cover.png" class="card-img-top" alt="Wednesdays Cover">
+                        <div class="card-overlay">
+                            <div class="card-overlay-content">
+                                <div class="card-body">
+                                    <h5 class="card-title">Wednesdays</h5>
+                                    <button class="see-more-button">
+                                        <span>See More</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Back to Explore Button - Separated from all content sections -->
+        <div class="back-button-container">
+            <button class="explore-button" onclick="window.location.href='index.html#explore'">Back to Explore</button>
+        </div>
+    </main>
+
+    <!-- Book Modal -->
+    <div id="book-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBookModal()">&times;</button>
+            <div class="modal-body">
+                <img src="" alt="" class="modal-book-cover" id="modal-cover">
+                <div class="modal-book-info">
+                    <h2 class="modal-book-title" id="modal-title"></h2>
+                    <h3 class="modal-book-author" id="modal-author"></h3>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-book-open"></i>
+                            About This Book
+                        </h4>
+                        <p class="modal-book-description" id="modal-description"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-heart"></i>
+                            Why I Love This Book
+                        </h4>
+                        <p class="modal-personal-note" id="modal-personal"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-link"></i>
+                            Links
+                        </h4>
+                        <div class="modal-book-links" id="modal-links"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Modal -->
+    <div id="movie-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeMovieModal()">&times;</button>
+            <div class="modal-body">
+                <img src="" alt="" class="modal-book-cover" id="modal-movie-poster">
+                <div class="modal-book-info">
+                    <h2 class="modal-book-title" id="modal-movie-title"></h2>
+                    <h3 class="modal-book-author" id="modal-movie-year"></h3>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-film"></i>
+                            About This Movie
+                        </h4>
+                        <p class="modal-book-description" id="modal-movie-description"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-heart"></i>
+                            Why I Love This Movie
+                        </h4>
+                        <p class="modal-personal-note" id="modal-movie-personal"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-link"></i>
+                            Links
+                        </h4>
+                        <div class="modal-book-links" id="modal-movie-links"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Series Modal -->
+    <div id="series-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeSeriesModal()">&times;</button>
+            <div class="modal-body">
+                <img src="" alt="" class="modal-book-cover" id="modal-series-poster">
+                <div class="modal-book-info">
+                    <h2 class="modal-book-title" id="modal-series-title"></h2>
+                    <h3 class="modal-book-author" id="modal-series-year"></h3>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-tv"></i>
+                            About This Series
+                        </h4>
+                        <p class="modal-book-description" id="modal-series-description"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-heart"></i>
+                            Why I Love This Series
+                        </h4>
+                        <p class="modal-personal-note" id="modal-series-personal"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-link"></i>
+                            Links
+                        </h4>
+                        <div class="modal-book-links" id="modal-series-links"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div id="game-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeGameModal()">&times;</button>
+            <div class="modal-body">
+                <img src="" alt="" class="modal-book-cover" id="modal-game-cover">
+                <div class="modal-book-info">
+                    <h2 class="modal-book-title" id="modal-game-title"></h2>
+                    <h3 class="modal-book-author" id="modal-game-platform"></h3>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-gamepad"></i>
+                            About This Game
+                        </h4>
+                        <p class="modal-book-description" id="modal-game-description"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-heart"></i>
+                            Why I Love This Game
+                        </h4>
+                        <p class="modal-personal-note" id="modal-game-personal"></p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">
+                            <i class="fas fa-link"></i>
+                            Links
+                        </h4>
+                        <div class="modal-book-links" id="modal-game-links"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>organ</h3>
+                <p>no, i don't sell organs</p>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <ul class="social-icons">
+                    <li><a href="mailto:oorgannn@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a></li>
+                    <li><a href="http://discordapp.com/users/228945269444706305" target="_blank"><i class="fab fa-discord"></i></a></li>
+                    <li><a href="https://t.me/organino" target="_blank"><i class="fab fa-telegram"></i></a></li>
+                    <li><a href="https://www.instagram.com/0rg4n/" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 organ. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* ==========================================
+           MY PICKS PAGE - JAVASCRIPT GUIDE
+           ==========================================
+
+           This page manages a collection of media recommendations with:
+           - Search and filter functionality
+           - Modal popups with detailed information
+           - Responsive card grid layout
+           - Manual content management via code pasting
+
+           WORKFLOW FOR ADDING NEW ITEMS:
+           ==============================
+
+           Step 1: Prepare your content
+           - Have your image ready in the correct assets folder:
+             * Books: assets/books/filename.jpg
+             * Movies: assets/movies/filename.jpg
+             * Series: assets/series/filename.jpg
+             * Games: assets/games/filename.jpg
+
+           Step 2: Generate code snippets
+           - Run: python content_generator.py
+           - Follow the prompts to enter your item details
+           - The program will generate TWO code snippets:
+             1. HTML Card Code (for the visible grid)
+             2. JavaScript Data Code (for the modal popup)
+
+           Step 3: Paste HTML code
+           - Find the section for your category (Books, Movies, Series, Games)
+           - Look for the "PASTE NEW [CATEGORY] CARDS HERE" comment
+           - Paste the HTML Card Code there
+           - You can paste above or below existing cards
+
+           Step 4: Paste JavaScript data
+           - Scroll down to the JavaScript section
+           - Find the corresponding data object (booksData, moviesData, etc.)
+           - Look for the "PASTE NEW [CATEGORY] DATA HERE" comment
+           - Paste the JavaScript Data Code there
+           - IMPORTANT: Make sure there's a comma after the previous entry!
+
+           Step 5: Save and test
+           - Save this file (Ctrl+S or Cmd+S)
+           - Refresh your browser (F5 or Cmd+R)
+           - Your new card should appear in the grid
+           - Click it to test the modal popup
+
+           TROUBLESHOOTING:
+           ================
+           - If card doesn't appear: Check HTML syntax, look for missing closing tags
+           - If modal doesn't open: Check that the data-title in HTML matches the key in JavaScript
+           - If search doesn't find item: Make sure data-category, data-title, and data-description are set
+           - If layout breaks: Check responsive breakpoints, cards should be 210px wide on desktop
+
+           CODE STRUCTURE:
+           ===============
+           1. Search/Filter System (lines ~1400-1540)
+           2. Modal Systems (lines ~1580-2100)
+              - Book modals
+              - Movie modals
+              - Series modals
+              - Game modals
+           3. Click Handlers (lines ~2100-2200)
+
+           ========================================== */
+
+        // ============================================
+        // SEARCH AND FILTER SYSTEM
+        // ============================================
+        // This section handles the search bar functionality.
+        // It filters cards based on:
+        // - Search input: Matches against data-title and data-description attributes
+        // - Category filter: Filters by data-category attribute (books, movies, series, games)
+        //
+        // How it works:
+        // 1. User types in search or changes category filter
+        // 2. performSearch() scans all .pick-item elements
+        // 3. Items that don't match get the 'hidden' class
+        // 4. Sections with no visible items get the 'hidden' class
+        // 5. Results count and empty state are updated
+        //
+        // To ensure new cards are searchable:
+        // - Make sure they have the correct data-category attribute
+        // - Include descriptive data-title and data-description attributes
+        // ============================================
+
+        // Search and Filter Functionality
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const clearSearch = document.getElementById('clearSearch');
+        const resultsInfo = document.getElementById('resultsInfo');
+        const emptyState = document.getElementById('emptyState');
+        const pickItems = document.querySelectorAll('.pick-item');
+        const sections = document.querySelectorAll('.picks-section');
+
+        // Search function - Optimized to prevent animation restart
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const selectedCategory = categoryFilter.value;
+
+            let visibleCount = 0;
+            const categoryCounts = { books: 0, movies: 0, series: 0, games: 0 };
+
+            // Collect all DOM changes first (read phase)
+            const updates = [];
+
+            pickItems.forEach(item => {
+                const category = item.dataset.category;
+                const title = item.dataset.title.toLowerCase();
+                const description = item.dataset.description.toLowerCase();
+
+                const matchesSearch = !searchTerm || title.includes(searchTerm) || description.includes(searchTerm);
+                const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
+
+                const shouldShow = matchesSearch && matchesCategory;
+
+                updates.push({ item, shouldShow });
+
+                if (shouldShow) {
+                    visibleCount++;
+                    categoryCounts[category]++;
+                }
+            });
+
+            // Batch all DOM updates together (write phase) using requestAnimationFrame
+            requestAnimationFrame(() => {
+                // Update clear button visibility
+                const shouldShowClear = searchTerm || selectedCategory !== 'all';
+                if (clearSearch.classList.contains('active') !== shouldShowClear) {
+                    clearSearch.classList.toggle('active', shouldShowClear);
+                }
+
+                // Apply all item visibility changes
+                updates.forEach(({ item, shouldShow }) => {
+                    const isCurrentlyHidden = item.classList.contains('hidden');
+                    if (isCurrentlyHidden === shouldShow) {
+                        item.classList.toggle('hidden', !shouldShow);
+                    }
+                });
+
+                // Update sections visibility
+                sections.forEach(section => {
+                    const sectionItems = section.querySelectorAll('.pick-item:not(.hidden)');
+                    const shouldHideSection = sectionItems.length === 0;
+                    const isCurrentlyHidden = section.classList.contains('hidden');
+
+                    if (isCurrentlyHidden !== shouldHideSection) {
+                        section.classList.toggle('hidden', shouldHideSection);
+                    }
+                });
+
+                // Update results info (only text content changes, no layout impact)
+                updateResultsInfo(visibleCount, searchTerm, selectedCategory);
+
+                // Update empty state visibility
+                const shouldShowEmpty = visibleCount === 0;
+                const isEmptyStateActive = emptyState.classList.contains('active');
+                if (isEmptyStateActive !== shouldShowEmpty) {
+                    emptyState.classList.toggle('active', shouldShowEmpty);
+                }
+            });
+        }
+
+        // Update results information
+        function updateResultsInfo(count, searchTerm, category) {
+            if (!searchTerm && category === 'all') {
+                resultsInfo.innerHTML = `Showing <span class="count">all ${count}</span> picks`;
+            } else {
+                let categoryText = category === 'all' ? 'all categories' : category;
+                let searchText = searchTerm ? ` matching "${searchTerm}"` : '';
+                resultsInfo.innerHTML = `Found <span class="count">${count}</span> result${count !== 1 ? 's' : ''} in ${categoryText}${searchText}`;
+            }
+        }
+
+        // Clear search
+        function clearSearchFunction() {
+            searchInput.value = '';
+            categoryFilter.value = 'all';
+            clearSearch.classList.remove('active');
+            performSearch();
+            searchInput.focus();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', performSearch);
+        categoryFilter.addEventListener('change', performSearch);
+        clearSearch.addEventListener('click', clearSearchFunction);
+
+        // Keyboard shortcuts
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                clearSearchFunction();
+            }
+        });
+
+        // Focus search with Ctrl+K or Cmd+K
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Adjust content padding for fixed header
+        function adjustContentPadding() {
+            const header = document.getElementById('header');
+            const pageHeader = document.querySelector('.picks-page-header');
+            if (window.getComputedStyle(header).position === 'fixed') {
+                const headerHeight = header.offsetHeight;
+                if (pageHeader) {
+                    pageHeader.style.paddingTop = `${headerHeight}px`;
+                }
+            }
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            adjustContentPadding();
+            performSearch(); // Initialize results count
+        });
+
+        window.addEventListener('resize', adjustContentPadding);
+        window.addEventListener('scroll', adjustContentPadding);
+
+        // ============================================
+        // MODAL POPUP SYSTEM
+        // ============================================
+        // This section contains all modal-related code for Books, Movies, Series, and Games.
+        //
+        // How the modal system works:
+        // 1. Each category has a data object (booksData, moviesData, etc.) containing full details
+        // 2. HTML cards have data-title attributes that get converted to keys
+        // 3. When a card is clicked, the key is used to look up data in the object
+        // 4. The modal is populated with the data and displayed
+        // 5. Clicking outside the modal or pressing ESC closes it
+        //
+        // Key generation:
+        // - The create*Key() functions convert titles to URL-friendly keys
+        // - Example: "Gödel, Escher, Bach: An Eternal Golden Braid" → "godel-escher-bach-an-eternal-golden-braid"
+        // - Make sure your data object keys match what these functions generate!
+        //
+        // Adding new modals:
+        // 1. Add HTML card with data-title attribute (see HTML insertion comments above)
+        // 2. Add data object entry with matching key (see data insertion comments below)
+        // 3. The click handlers will automatically attach to new cards
+        //
+        // Modal structure:
+        // - All modals share the same CSS classes for consistent styling
+        // - Modal overlays have z-index: 9999 to appear above all content
+        // - body.modal-open class prevents scrolling when modal is open
+        // ============================================
+
+        // ============================================
+        // BOOK MODAL SYSTEM
+        // ============================================
+        // This object stores all detailed information for book modals.
+        // Each book must have a unique key (URL-friendly, lowercase, no spaces).
+
+        // ========================================
+        // PASTE NEW BOOK DATA HERE
+        // ========================================
+        // Instructions:
+        // 1. Run content_generator.py and select a book to add
+        // 2. Copy the "JavaScript Data Code" from the generator output
+        // 3. Paste it right here (above or below existing entries)
+        // 4. Make sure to add a COMMA after the previous entry's closing brace
+        // 5. Save this file and refresh your browser
+        // 6. Click on the book card to test the modal popup
+        //
+        // Example data structure (DO NOT copy this - use content_generator.py):
+        // 'book-title-key': {{
+        //     title: 'Book Title',
+        //     author: 'Author Name',
+        //     cover: 'assets/books/cover.jpg',
+        //     description: 'Full description of the book...',
+        //     personalNote: 'Why you love this book...',
+        //     links: [
+        //         {{ text: 'Buy on Amazon', url: 'https://...', primary: true, icon: 'shopping-cart' }},
+        //         {{ text: 'Goodreads', url: 'https://...', primary: false, icon: 'book' }}
+        //     ]
+        // }},
+        //
+        // IMPORTANT: The key must match what createBookKey() generates from your card's data-title
+        // ========================================
+
+        const booksData = {
+            'anelli-nellio': {
+                title: 'I Am a Strange Loop',
+                author: 'Douglas R. Hofstadter',
+                cover: 'assets/books/anelli_nell_io.jpg',
+                description: 'An exploration of consciousness and self-awareness through strange loops and recursion. This groundbreaking work delves into the nature of identity, self-reference, and the emergence of consciousness from physical systems.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'Buy on Amazon (ENG)', url: 'https://amzn.to/4il3TMV', primary: true, icon: 'shopping-cart' }, { text: 'Buy on Amazon (ITA)', url: 'https://amzn.to/4rnOrn6', primary: true, icon: 'shopping-cart' }, { text: 'Goodreads', url: 'https://www.goodreads.com/book/show/123471.I_Am_a_Strange_Loop', primary: false, icon: 'book' }
+                ]
+            },
+            'come-crescere-figli-sereni': {
+                title: 'Come crescere figli sereni',
+                author: 'Gabriella Tupini',
+                cover: 'assets/books/come_crescere_figli_sereni.jpg',
+                description: 'A guide to raising emotionally healthy children through positive discipline and empathy. This book provides practical insights into child psychology and parenting techniques that foster emotional well-being.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'Buy on Amazon', url: 'https://amzn.to/4pDqEOx', primary: true, icon: 'shopping-cart' }
+                ]
+            },
+            'godel-escher-bach-an-eternal-golden-braid': {
+                title: 'Gödel, Escher, Bach: An Eternal Golden Braid',
+                author: 'Douglas R. Hofstadter',
+                cover: 'assets/books/geb_hofstadter.jpg',
+                description: 'A Pulitzer Prize-winning masterpiece that explores the nature of consciousness, artificial intelligence, and self-reference through an intricate weaving of mathematical logic (Gödel\'s incompleteness theorems), visual paradoxes (Escher\'s impossible architectures), and musical complexity (Bach\'s fugues). Through witty dialogues, elegant proofs, and mind-bending puzzles, Hofstadter reveals the \"strange loops\" that underlie human thought and intelligence. The book demonstrates how meaning, consciousness, and the sense of \"I\" can emerge from seemingly meaningless formal systems. It\'s a profound meditation on recursion, self-reference, and the fundamental mystery of how the brain gives rise to the mind.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'Buy on Amazon (ENG)', url: 'https://amzn.to/4oW8iIu', primary: true, icon: 'shopping-cart' }, { text: 'Buy on Amazon (ITA)', url: 'https://amzn.to/4p3EOIV', primary: true, icon: 'shopping-cart' }, { text: 'Goodreads', url: 'https://www.goodreads.com/book/show/24113.G_del_Escher_Bach', primary: false, icon: 'book' }, { text: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach', primary: false, icon: 'wikipedia-w' }
+                ]
+            },
+            'la-vera-interpretazione-dei-sogni': {
+                title: 'La vera interpretazione dei sogni',
+                author: 'Gabriella Tupini',
+                cover: 'assets/books/la_vera_interpretazione_dei_sogni.jpg',
+                description: 'A guide to understanding dreams through personal and deep psychological journey. This work offers a unique methodology for interpreting dreams and understanding their role in the unconscious mind.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'Buy on Amazon', url: 'https://amzn.to/4oeDmSB', primary: true, icon: 'shopping-cart' }
+                ]
+            },
+            'nella-tana-del-lupo': {
+                title: 'Nella tana del lupo',
+                author: 'Gabriella Tupini',
+                cover: 'assets/books/nella_tana_del_lupo.jpg',
+                description: 'An autobiographical work exploring the journey to awareness and eliminating suffering. This powerful narrative chronicles a personal transformation through confronting difficult truths and finding inner peace.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'Buy on Amazon', url: 'https://amzn.to/4iiY0zw', primary: true, icon: 'shopping-cart' }
+                ]
+            },
+            'scoprire-gli-abusi': {
+                title: 'Scoprire gli abusi',
+                author: 'Gabriella Tupini',
+                cover: 'assets/books/scoprire_gli_abusi.jpg',
+                description: 'A psychological exploration of abuse and recovery with unique methodology. This important work provides insight into recognizing, understanding, and healing from various forms of abuse.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'Buy on Amazon', url: 'https://amzn.to/3LU0nwS', primary: true, icon: 'shopping-cart' }
+                ]
+            }
+
+            // ========================================
+            // PASTE NEW BOOK DATA HERE
+            // ========================================
+            // Instructions:
+            // 1. Run content_generator.py and fill in book details
+            // 2. Copy the "JavaScript Data Code" from the generator output
+            // 3. Add a comma (,) after the closing brace above
+            // 4. Paste the generated code right here
+            // 5. Save this file and refresh your browser
+            // 6. The book modal will now work with the new data
+            //
+            // Example format (DO NOT copy this - use content_generator.py):
+            // 'book-title-key': {
+            //     title: 'Book Title',
+            //     author: 'Author Name',
+            //     cover: 'assets/books/cover.jpg',
+            //     description: 'Book description...',
+            //     personalNote: 'Your personal thoughts...',
+            //     links: [
+            //         { text: 'Buy on Amazon', url: 'https://...', primary: true, icon: 'shopping-cart' },
+            //         { text: 'Goodreads', url: 'https://...', primary: false, icon: 'book' }
+            //     ]
+            // }
+            //
+            // IMPORTANT: Make sure to add a comma after the previous entry!
+            // ========================================
+        };
+
+        // Function to create a URL-friendly key from book title
+        function createBookKey(title) {
+            return title
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove diacritics (ö → o)
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .trim();
+        }
+
+        // Open book modal
+        function openBookModal(bookKey) {
+            const book = booksData[bookKey];
+            if (!book) {
+                console.error('Book not found:', bookKey);
+                return;
+            }
+
+            // Populate modal content
+            document.getElementById('modal-cover').src = book.cover;
+            document.getElementById('modal-cover').alt = book.title;
+            document.getElementById('modal-title').textContent = book.title;
+            document.getElementById('modal-author').textContent = book.author;
+            document.getElementById('modal-description').textContent = book.description;
+            document.getElementById('modal-personal').textContent = book.personalNote;
+
+            // Populate links
+            const linksContainer = document.getElementById('modal-links');
+            linksContainer.innerHTML = '';
+            book.links.forEach(link => {
+                const linkEl = document.createElement('a');
+                linkEl.href = link.url;
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener noreferrer';
+                linkEl.className = `modal-link ${link.primary ? 'primary' : ''}`;
+                linkEl.innerHTML = `
+                    <i class="fas fa-${link.icon}"></i>
+                    <span>${link.text}</span>
+                `;
+                linksContainer.appendChild(linkEl);
+            });
+
+            // Show modal
+            const modal = document.getElementById('book-modal');
+            modal.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        // Close book modal
+        function closeBookModal() {
+            const modal = document.getElementById('book-modal');
+            modal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('book-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBookModal();
+            }
+        });
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeBookModal();
+                closeMovieModal();
+                closeSeriesModal();
+                closeGameModal();
+            }
+        });
+
+        // Add click handlers to book cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookCards = document.querySelectorAll('#books .pick-item');
+
+            bookCards.forEach(card => {
+                const title = card.dataset.title;
+                const bookKey = createBookKey(title.split(' - ')[0]); // Extract book title before author
+
+                // Click on entire card
+                card.addEventListener('click', function(e) {
+                    // Don't open if clicking the "See More" button (it will trigger separately)
+                    if (!e.target.closest('.see-more-button')) {
+                        openBookModal(bookKey);
+                    }
+                });
+
+                // Click on "See More" button
+                const seeMoreBtn = card.querySelector('.see-more-button');
+                if (seeMoreBtn) {
+                    seeMoreBtn.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Prevent double triggering
+                        openBookModal(bookKey);
+                    });
+                }
+            });
+        });
+
+        // ============================================
+        // MOVIE MODAL SYSTEM
+        // ============================================
+        // This object stores all detailed information for movie modals.
+        // Each movie must have a unique key (URL-friendly, lowercase, no spaces).
+
+        // ========================================
+        // PASTE NEW MOVIE DATA HERE
+        // ========================================
+        // Instructions:
+        // 1. Run content_generator.py and select a movie to add
+        // 2. Copy the "JavaScript Data Code" from the generator output
+        // 3. Paste it right here (above or below existing entries)
+        // 4. Make sure to add a COMMA after the previous entry's closing brace
+        // 5. Save this file and refresh your browser
+        // 6. Click on the movie card to test the modal popup
+        //
+        // Example data structure (DO NOT copy this - use content_generator.py):
+        // 'movie-title-key': {{
+        //     title: 'Movie Title',
+        //     year: '2023',
+        //     poster: 'assets/movies/poster.jpg',
+        //     description: 'Full description of the movie...',
+        //     personalNote: 'Why you love this movie...',
+        //     links: [
+        //         {{ text: 'IMDb', url: 'https://...', primary: true, icon: 'film' }},
+        //         {{ text: 'Watch Trailer', url: 'https://...', primary: false, icon: 'play' }}
+        //     ]
+        // }},
+        //
+        // IMPORTANT: The key must match what createMovieKey() generates from your card's data-title
+        // ========================================
+
+        // Movie Data - Generated from picks.json
+        const moviesData = {
+            'detachment': {
+                title: 'Detachment',
+                year: '2011',
+                poster: 'assets/movies/detachment_2011_cover.jpg',
+                description: 'A chronicle of three weeks in the lives of several high school teachers, administrators and students through the eyes of substitute teacher Henry Barthes. Directed by Tony Kaye and starring Adrien Brody, the film explores themes of emotional detachment and the struggles faced by both teachers and students in the American education system.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'More info on IMDb', url: 'https://www.imdb.com/title/tt1683526/', primary: true, icon: 'film' }
+                ]
+            },
+
+            // ========================================
+            // PASTE NEW MOVIE DATA HERE
+            // ========================================
+            // Instructions:
+            // 1. Run content_generator.py and select "movies" category
+            // 2. Copy the "JavaScript Data Code" from the generator output
+            // 3. Add a comma (,) after the closing brace above
+            // 4. Paste the generated code right here
+            // 5. Save this file and refresh your browser
+            //
+            // Example format (DO NOT copy this - use content_generator.py):
+            // 'movie-title': {
+            //     title: 'Movie Title',
+            //     year: '2024',
+            //     poster: 'assets/movies/poster.jpg',
+            //     description: 'Movie description...',
+            //     personalNote: 'Your thoughts...',
+            //     links: [
+            //         { text: 'View on IMDb', url: 'https://...', primary: true, icon: 'film' }
+            //     ]
+            // }
+            // ========================================
+            'monster' : {
+                title: 'Monster',
+                year: '2023',
+                poster: 'assets/movies/monster_2023_cover.jpg',
+                description: 'Japanese drama about a single mother who suspects her fifth-grade son\'s teacher of bullying after the boy exhibits strange behavior. The film tells the same story from three different perspectives (the mother\'s, the teacher\'s and the children\'s) gradually revealing a more complex truth about what\'s really happening.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                                { text: 'More info on IMDb', url: 'https://www.imdb.com/title/tt23736044/', primary: true, icon: 'film' }
+                            ]
+            }
+        };
+
+        // Function to create a URL-friendly key from movie title
+        function createMovieKey(title) {
+            return title
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .trim();
+        }
+
+        // Open movie modal
+        function openMovieModal(movieKey) {
+            const movie = moviesData[movieKey];
+            if (!movie) {
+                console.error('Movie not found:', movieKey);
+                return;
+            }
+
+            // Populate modal content
+            document.getElementById('modal-movie-poster').src = movie.poster;
+            document.getElementById('modal-movie-poster').alt = movie.title;
+            document.getElementById('modal-movie-title').textContent = movie.title;
+            document.getElementById('modal-movie-year').textContent = movie.year;
+            document.getElementById('modal-movie-description').textContent = movie.description;
+            document.getElementById('modal-movie-personal').textContent = movie.personalNote;
+
+            // Populate links
+            const linksContainer = document.getElementById('modal-movie-links');
+            linksContainer.innerHTML = '';
+            movie.links.forEach(link => {
+                const linkEl = document.createElement('a');
+                linkEl.href = link.url;
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener noreferrer';
+                linkEl.className = `modal-link ${link.primary ? 'primary' : ''}`;
+                linkEl.innerHTML = `
+                    <i class="fas fa-${link.icon}"></i>
+                    <span>${link.text}</span>
+                `;
+                linksContainer.appendChild(linkEl);
+            });
+
+            // Show modal
+            const modal = document.getElementById('movie-modal');
+            modal.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        // Close movie modal
+        function closeMovieModal() {
+            const modal = document.getElementById('movie-modal');
+            modal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('movie-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMovieModal();
+            }
+        });
+
+        // ============================================
+        // SERIES MODAL SYSTEM
+        // ============================================
+        // This object stores all detailed information for series modals.
+        // Each series must have a unique key (URL-friendly, lowercase, no spaces).
+
+        // ========================================
+        // PASTE NEW SERIES DATA HERE
+        // ========================================
+        // Instructions:
+        // 1. Run content_generator.py and select a series to add
+        // 2. Copy the "JavaScript Data Code" from the generator output
+        // 3. Paste it right here (above or below existing entries)
+        // 4. Make sure to add a COMMA after the previous entry's closing brace
+        // 5. Save this file and refresh your browser
+        // 6. Click on the series card to test the modal popup
+        //
+        // Example data structure (DO NOT copy this - use content_generator.py):
+        // 'series-title-key': {{
+        //     title: 'Series Title',
+        //     year: '2020-2023',
+        //     poster: 'assets/series/poster.jpg',
+        //     description: 'Full description of the series...',
+        //     personalNote: 'Why you love this series...',
+        //     links: [
+        //         {{ text: 'IMDb', url: 'https://...', primary: true, icon: 'tv' }},
+        //         {{ text: 'Watch Trailer', url: 'https://...', primary: false, icon: 'play' }}
+        //     ]
+        // }},
+        //
+        // IMPORTANT: The key must match what createSeriesKey() generates from your card's data-title
+        // ========================================
+
+        // Series Data - Generated from picks.json
+        const seriesData = {
+            'series-title-1': {
+                title: 'Series Title 1',
+                year: '',
+                poster: 'https://via.placeholder.com/300x400/e0d4fd/2c3e50?text=Series+Cover',
+                description: 'An addictive binge-worthy series with complex characters and plot twists.',
+                personalNote: '',
+                links: []
+            },
+            'series-title-2': {
+                title: 'Series Title 2',
+                year: '',
+                poster: 'https://via.placeholder.com/300x400/a7f3d0/2c3e50?text=Series+Cover',
+                description: 'A groundbreaking show that changed television storytelling forever.',
+                personalNote: '',
+                links: []
+            },
+            'series-title-3': {
+                title: 'Series Title 3',
+                year: '',
+                poster: 'https://via.placeholder.com/300x400/ffd7ba/2c3e50?text=Series+Cover',
+                description: 'Compelling drama with exceptional writing and performances.',
+                personalNote: '',
+                links: []
+            },
+            'series-title-4': {
+                title: 'Series Title 4',
+                year: '',
+                poster: 'https://via.placeholder.com/300x400/bfdbfe/2c3e50?text=Series+Cover',
+                description: 'A thrilling series that keeps you guessing until the very end.',
+                personalNote: '',
+                links: []
+            }
+
+            // ========================================
+            // PASTE NEW SERIES DATA HERE
+            // ========================================
+            // Instructions:
+            // 1. Run content_generator.py and select "series" category
+            // 2. Copy the "JavaScript Data Code" from the generator output
+            // 3. Add a comma (,) after the closing brace above
+            // 4. Paste the generated code right here
+            // 5. Save this file and refresh your browser
+            //
+            // Example format (DO NOT copy this - use content_generator.py):
+            // 'series-title': {
+            //     title: 'Series Title',
+            //     year: '2024',
+            //     poster: 'assets/series/poster.jpg',
+            //     description: 'Series description...',
+            //     personalNote: 'Your thoughts...',
+            //     links: [
+            //         { text: 'View on IMDb', url: 'https://...', primary: true, icon: 'tv' }
+            //     ]
+            // }
+            // ========================================
+        };
+
+        // Function to create a URL-friendly key from series title
+        function createSeriesKey(title) {
+            return title
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .trim();
+        }
+
+        // Open series modal
+        function openSeriesModal(seriesKey) {
+            const series = seriesData[seriesKey];
+            if (!series) {
+                console.error('Series not found:', seriesKey);
+                return;
+            }
+
+            // Populate modal content
+            document.getElementById('modal-series-poster').src = series.poster;
+            document.getElementById('modal-series-poster').alt = series.title;
+            document.getElementById('modal-series-title').textContent = series.title;
+            document.getElementById('modal-series-year').textContent = series.year;
+            document.getElementById('modal-series-description').textContent = series.description;
+            document.getElementById('modal-series-personal').textContent = series.personalNote;
+
+            // Populate links
+            const linksContainer = document.getElementById('modal-series-links');
+            linksContainer.innerHTML = '';
+            series.links.forEach(link => {
+                const linkEl = document.createElement('a');
+                linkEl.href = link.url;
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener noreferrer';
+                linkEl.className = `modal-link ${link.primary ? 'primary' : ''}`;
+                linkEl.innerHTML = `
+                    <i class="fas fa-${link.icon}"></i>
+                    <span>${link.text}</span>
+                `;
+                linksContainer.appendChild(linkEl);
+            });
+
+            // Show modal
+            const modal = document.getElementById('series-modal');
+            modal.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        // Close series modal
+        function closeSeriesModal() {
+            const modal = document.getElementById('series-modal');
+            modal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('series-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSeriesModal();
+            }
+        });
+
+        // ============================================
+        // GAME MODAL SYSTEM
+        // ============================================
+        // This object stores all detailed information for game modals.
+        // Each game must have a unique key (URL-friendly, lowercase, no spaces).
+
+        // ========================================
+        // PASTE NEW GAME DATA HERE
+        // ========================================
+        // Instructions:
+        // 1. Run content_generator.py and select a game to add
+        // 2. Copy the "JavaScript Data Code" from the generator output
+        // 3. Paste it right here (above or below existing entries)
+        // 4. Make sure to add a COMMA after the previous entry's closing brace
+        // 5. Save this file and refresh your browser
+        // 6. Click on the game card to test the modal popup
+        //
+        // Example data structure (DO NOT copy this - use content_generator.py):
+        // 'game-title-key': {{
+        //     title: 'Game Title',
+        //     platform: 'PC, PS5, Xbox',
+        //     cover: 'assets/games/cover.jpg',
+        //     description: 'Full description of the game...',
+        //     personalNote: 'Why you love this game...',
+        //     links: [
+        //         {{ text: 'Steam', url: 'https://...', primary: true, icon: 'gamepad' }},
+        //         {{ text: 'Metacritic', url: 'https://...', primary: false, icon: 'star' }}
+        //     ]
+        // }},
+        //
+        // IMPORTANT: The key must match what createGameKey() generates from your card's data-title
+        // ========================================
+
+        // Game Data - Generated from picks.json
+        const gamesData = {
+            'game-title-1': {
+                title: 'Game Title 1',
+                platform: '',
+                cover: 'https://via.placeholder.com/300x400/e0d4fd/2c3e50?text=Game+Cover',
+                description: 'An immersive open-world adventure with breathtaking graphics and gameplay.',
+                personalNote: '',
+                links: []
+            },
+            'game-title-2': {
+                title: 'Game Title 2',
+                platform: '',
+                cover: 'https://via.placeholder.com/300x400/a7f3d0/2c3e50?text=Game+Cover',
+                description: 'A strategic masterpiece that challenges your mind and reflexes.',
+                personalNote: '',
+                links: []
+            },
+            'game-title-3': {
+                title: 'Game Title 3',
+                platform: '',
+                cover: 'https://via.placeholder.com/300x400/ffd7ba/2c3e50?text=Game+Cover',
+                description: 'A narrative-driven experience with unforgettable characters and story.',
+                personalNote: '',
+                links: []
+            },
+            'game-title-4': {
+                title: 'Game Title 4',
+                platform: '',
+                cover: 'https://via.placeholder.com/300x400/bfdbfe/2c3e50?text=Game+Cover',
+                description: 'An innovative gameplay experience that pushes the boundaries of the medium.',
+                personalNote: '',
+                links: []
+            }
+
+            // ========================================
+            // PASTE NEW GAME DATA HERE
+            // ========================================
+            // Instructions:
+            // 1. Run content_generator.py and select "games" category
+            // 2. Copy the "JavaScript Data Code" from the generator output
+            // 3. Add a comma (,) after the closing brace above
+            // 4. Paste the generated code right here
+            // 5. Save this file and refresh your browser
+            //
+            // Example format (DO NOT copy this - use content_generator.py):
+            // 'game-title': {
+            //     title: 'Game Title',
+            //     year: '2024',
+            //     cover: 'assets/games/cover.jpg',
+            //     description: 'Game description...',
+            //     personalNote: 'Your thoughts...',
+            //     links: [
+            //         { text: 'Steam Page', url: 'https://...', primary: true, icon: 'steam' }
+            //     ]
+            // }
+            // ========================================
+        };
+
+        // Function to create a URL-friendly key from game title
+        function createGameKey(title) {
+            return title
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .trim();
+        }
+
+        // Open game modal
+        function openGameModal(gameKey) {
+            const game = gamesData[gameKey];
+            if (!game) {
+                console.error('Game not found:', gameKey);
+                return;
+            }
+
+            // Populate modal content
+            document.getElementById('modal-game-cover').src = game.cover;
+            document.getElementById('modal-game-cover').alt = game.title;
+            document.getElementById('modal-game-title').textContent = game.title;
+            document.getElementById('modal-game-platform').textContent = game.platform;
+            document.getElementById('modal-game-description').textContent = game.description;
+            document.getElementById('modal-game-personal').textContent = game.personalNote;
+
+            // Populate links
+            const linksContainer = document.getElementById('modal-game-links');
+            linksContainer.innerHTML = '';
+            game.links.forEach(link => {
+                const linkEl = document.createElement('a');
+                linkEl.href = link.url;
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener noreferrer';
+                linkEl.className = `modal-link ${link.primary ? 'primary' : ''}`;
+                linkEl.innerHTML = `
+                    <i class="fas fa-${link.icon}"></i>
+                    <span>${link.text}</span>
+                `;
+                linksContainer.appendChild(linkEl);
+            });
+
+            // Show modal
+            const modal = document.getElementById('game-modal');
+            modal.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        // Close game modal
+        function closeGameModal() {
+            const modal = document.getElementById('game-modal');
+            modal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('game-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeGameModal();
+            }
+        });
+
+        // ============================================
+        // CLICK HANDLERS FOR MOVIE, SERIES, AND GAME CARDS
+        // ============================================
+
+        // Add click handlers to movie cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const movieCards = document.querySelectorAll('#movies .pick-item');
+
+            movieCards.forEach(card => {
+                const title = card.dataset.title;
+                const movieKey = createMovieKey(title);
+
+                // Click on entire card
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.see-more-button')) {
+                        openMovieModal(movieKey);
+                    }
+                });
+
+                // Click on "See More" button
+                const seeMoreBtn = card.querySelector('.see-more-button');
+                if (seeMoreBtn) {
+                    seeMoreBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openMovieModal(movieKey);
+                    });
+                }
+            });
+        });
+
+        // Add click handlers to series cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const seriesCards = document.querySelectorAll('#series .pick-item');
+
+            seriesCards.forEach(card => {
+                const title = card.dataset.title;
+                const seriesKey = createSeriesKey(title);
+
+                // Click on entire card
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.see-more-button')) {
+                        openSeriesModal(seriesKey);
+                    }
+                });
+
+                // Click on "See More" button
+                const seeMoreBtn = card.querySelector('.see-more-button');
+                if (seeMoreBtn) {
+                    seeMoreBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openSeriesModal(seriesKey);
+                    });
+                }
+            });
+        });
+
+        // Add click handlers to game cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameCards = document.querySelectorAll('#games .pick-item');
+
+            gameCards.forEach(card => {
+                const title = card.dataset.title;
+                const gameKey = createGameKey(title);
+
+                // Click on entire card
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.see-more-button')) {
+                        openGameModal(gameKey);
+                    }
+                });
+
+                // Click on "See More" button
+                const seeMoreBtn = card.querySelector('.see-more-button');
+                if (seeMoreBtn) {
+                    seeMoreBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openGameModal(gameKey);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
