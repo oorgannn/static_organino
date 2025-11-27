@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>organ - My Picks</title>
     <link rel="icon" href="assets/favicon-192x192.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
@@ -15,14 +19,74 @@
 
         /* Ensure background animation continues smoothly */
         body {
-            will-change: background-position;
             animation: gradientShift 20s ease infinite;
+            /* Enable smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
+            /* Prevent bounce effect on iOS when scrolling */
+            overscroll-behavior-y: none;
         }
 
-        /* Prevent animation restart by isolating DOM changes */
-        * {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+        /* Optimize rendering for mobile devices */
+        @supports (backdrop-filter: blur(10px)) {
+            body {
+                will-change: background-position;
+            }
+        }
+
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+            /* Reduce backdrop blur on mobile for better performance */
+            .search-bar-wrapper,
+            .card-overlay {
+                -webkit-backdrop-filter: blur(8px) !important;
+                backdrop-filter: blur(8px) !important;
+            }
+
+            /* Disable gradient animation on low-end mobile devices */
+            @media (prefers-reduced-motion: reduce) {
+                body {
+                    animation: none;
+                    background-position: 0% 50%;
+                }
+            }
+        }
+
+        /* Touch device optimizations - Fix hover issues on mobile */
+        @media (hover: none) and (pointer: coarse) {
+            /* On touch devices, make overlay always slightly visible */
+            .card-overlay {
+                opacity: 0;
+                background: rgba(0, 0, 0, 0.3);
+            }
+
+            /* Show overlay on tap/active state instead of hover */
+            .card.project-card:active .card-overlay,
+            .card.project-card.tapped .card-overlay {
+                opacity: 1;
+                background: rgba(0, 0, 0, 0.75);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            .card.project-card:active .card-overlay-content,
+            .card.project-card.tapped .card-overlay-content {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            /* Remove transform on tap to prevent stuck states */
+            .card.project-card:active {
+                transform: translateY(-4px) scale(1.01);
+            }
+
+            /* Disable hover transforms that can get stuck on touch */
+            .card.project-card:hover {
+                transform: none;
+            }
+
+            .card.project-card:hover .card-img-top {
+                transform: none;
+            }
         }
 
         /* Search Bar Container */
@@ -33,9 +97,8 @@
         }
 
         .search-bar-wrapper {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background: rgba(var(--color-bg-glass), 0.4);
+            /* Fallback for browsers without backdrop-filter support */
+            background: rgba(var(--color-bg-glass), 0.85);
             border: 2px solid rgba(var(--color-border-glass), 0.5);
             border-radius: 50px;
             padding: 0.75rem 1.5rem;
@@ -44,6 +107,15 @@
             gap: 1rem;
             box-shadow: 0 8px 32px var(--color-shadow);
             transition: all 0.3s ease;
+        }
+
+        /* Apply backdrop-filter only if supported */
+        @supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+            .search-bar-wrapper {
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                background: rgba(var(--color-bg-glass), 0.4);
+            }
         }
 
         .search-bar-wrapper:focus-within {
@@ -62,9 +134,12 @@
             background: none;
             border: none;
             outline: none;
+            /* Minimum 16px to prevent iOS Safari auto-zoom on focus */
             font-size: 1.05rem;
             color: var(--color-text-accent);
             font-weight: 500;
+            /* Prevent zoom on focus for iOS */
+            touch-action: manipulation;
         }
 
         .search-input::placeholder {
@@ -89,11 +164,16 @@
             cursor: pointer;
             transition: all 0.3s ease;
             outline: none;
+            /* Ensure minimum touch target size */
+            min-height: 44px;
         }
 
-        .category-filter:hover {
-            background: rgba(var(--color-border-glass), 0.5);
-            border-color: var(--lavanda);
+        /* Only apply hover effects on devices that support hover */
+        @media (hover: hover) and (pointer: fine) {
+            .category-filter:hover {
+                background: rgba(var(--color-border-glass), 0.5);
+                border-color: var(--lavanda);
+            }
         }
 
         .clear-search {
@@ -113,9 +193,12 @@
             display: flex;
         }
 
-        .clear-search:hover {
-            color: var(--color-text-accent);
-            transform: rotate(90deg);
+        /* Only apply hover effects on devices that support hover */
+        @media (hover: hover) and (pointer: fine) {
+            .clear-search:hover {
+                color: var(--color-text-accent);
+                transform: rotate(90deg);
+            }
         }
 
         /* Results Info */
@@ -217,11 +300,6 @@
             border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        .card.project-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-        }
-
         /* Card image - always visible */
         .card-img-top {
             width: 100%;
@@ -233,17 +311,24 @@
             transition: transform 0.4s ease;
         }
 
-        .card.project-card:hover .card-img-top {
-            transform: scale(1.05);
+        /* Only apply hover effects on devices that support hover */
+        @media (hover: hover) and (pointer: fine) {
+            .card.project-card:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+            }
+
+            .card.project-card:hover .card-img-top {
+                transform: scale(1.05);
+            }
         }
 
         /* Card overlay - hidden by default, appears on hover */
         .card-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
+            /* Fallback for browsers without backdrop-filter */
+            background: rgba(0, 0, 0, 0.85);
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -254,10 +339,13 @@
             z-index: 2;
         }
 
-        .card.project-card:hover .card-overlay {
-            opacity: 1;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        /* Apply backdrop-filter only if supported */
+        @supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+            .card-overlay {
+                background: rgba(0, 0, 0, 0.75);
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+            }
         }
 
         /* Overlay content animation */
@@ -275,9 +363,23 @@
             height: 100%;
         }
 
-        .card.project-card:hover .card-overlay-content {
-            transform: translateY(0);
-            opacity: 1;
+        /* Only apply hover effects on devices that support hover */
+        @media (hover: hover) and (pointer: fine) {
+            .card.project-card:hover .card-overlay {
+                opacity: 1;
+            }
+
+            @supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+                .card.project-card:hover .card-overlay {
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                }
+            }
+
+            .card.project-card:hover .card-overlay-content {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         /* Card body - now inside overlay, hidden by default */
@@ -299,9 +401,8 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.65rem 1.5rem;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            /* Fallback for browsers without backdrop-filter */
+            background: rgba(255, 255, 255, 0.25);
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50px;
             color: #ffffff;
@@ -311,25 +412,40 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            /* Ensure minimum touch target size for mobile (44x44px iOS, 48x48px Android) */
+            min-height: 44px;
+            min-width: 100px;
         }
 
-        .see-more-button:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        /* Apply backdrop-filter only if supported */
+        @supports (backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px)) {
+            .see-more-button {
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                background: rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        /* Only apply hover effects on devices that support hover */
+        @media (hover: hover) and (pointer: fine) {
+            .see-more-button:hover {
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            }
+
+            .see-more-button i {
+                transition: transform 0.3s ease;
+            }
+
+            .see-more-button:hover i {
+                transform: translateX(4px);
+            }
         }
 
         .see-more-button:active {
             transform: translateY(0);
-        }
-
-        .see-more-button i {
-            transition: transform 0.3s ease;
-        }
-
-        .see-more-button:hover i {
-            transform: translateX(4px);
         }
 
         /* Hide card descriptions */
@@ -383,16 +499,24 @@
                 flex-wrap: wrap;
                 padding: 1rem 1.25rem;
                 border-radius: 30px;
+                min-height: auto;
+            }
+
+            .search-input {
+                width: 100%;
+                margin-bottom: 0.5rem;
             }
 
             .search-controls {
                 width: 100%;
                 justify-content: space-between;
                 margin-top: 0.5rem;
+                flex-shrink: 0;
             }
 
             .category-filter {
                 flex: 1;
+                max-width: calc(100% - 50px);
             }
         }
 
@@ -422,19 +546,28 @@
 
             .search-container {
                 margin-bottom: 2rem;
+                padding: 0 0.5rem;
             }
 
             .search-bar-wrapper {
                 padding: 0.75rem 1rem;
+                gap: 0.75rem;
             }
 
             .search-input {
                 font-size: 0.95rem;
+                width: 100%;
             }
 
             .category-filter {
                 font-size: 0.85rem;
                 padding: 0.35rem 0.75rem;
+                max-width: calc(100% - 45px);
+            }
+
+            .clear-search {
+                padding: 0.4rem;
+                font-size: 1rem;
             }
         }
 
@@ -484,9 +617,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            /* Fallback for browsers without backdrop-filter */
+            background: rgba(0, 0, 0, 0.92);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -496,6 +628,19 @@
             transition: opacity 0.3s ease, visibility 0.3s ease;
             padding: 1rem;
             overflow-y: auto;
+            /* Enable smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
+            /* Prevent body scroll when modal is open on iOS */
+            overscroll-behavior: contain;
+        }
+
+        /* Apply backdrop-filter only if supported */
+        @supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+            .modal-overlay {
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                background: rgba(0, 0, 0, 0.85);
+            }
         }
 
         .modal-overlay.active {
@@ -507,9 +652,8 @@
             position: relative;
             width: 100%;
             max-width: 900px;
-            background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            /* Fallback for browsers without backdrop-filter */
+            background: rgba(20, 20, 30, 0.98);
             border: 2px solid rgba(255, 255, 255, 0.15);
             border-radius: 24px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -517,6 +661,17 @@
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             max-height: 90vh;
             overflow-y: auto;
+            /* Enable smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Apply backdrop-filter only if supported */
+        @supports (backdrop-filter: blur(30px)) or (-webkit-backdrop-filter: blur(30px)) {
+            .modal-content {
+                backdrop-filter: blur(30px);
+                -webkit-backdrop-filter: blur(30px);
+                background: rgba(20, 20, 30, 0.95);
+            }
         }
 
         .modal-overlay.active .modal-content {
@@ -527,10 +682,11 @@
             position: absolute;
             top: 1.25rem;
             right: 1.25rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            /* Fallback for browsers without backdrop-filter */
+            background: rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
+            /* Minimum touch target size for mobile accessibility */
             width: 44px;
             height: 44px;
             display: flex;
@@ -543,10 +699,31 @@
             z-index: 10;
         }
 
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: rotate(90deg);
+        /* Apply backdrop-filter only if supported */
+        @supports (backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px)) {
+            .modal-close {
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Only apply hover effects on devices that support hover */
+        @media (hover: hover) and (pointer: fine) {
+            .modal-close:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.4);
+                transform: rotate(90deg);
+            }
+        }
+
+        /* Touch device feedback */
+        @media (hover: none) and (pointer: coarse) {
+            .modal-close:active {
+                background: rgba(255, 255, 255, 0.3);
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: scale(0.95);
+            }
         }
 
         .modal-body {
@@ -2171,6 +2348,17 @@
 
         // Game Data - Generated from picks.json
         const gamesData = {
+            'wednesdays': {
+                title: 'Wednesdays',
+                platform: 'PC, Mobile',
+                cover: 'assets/games/wednesdays-cover.png',
+                description: 'Wednesdays is a narrative game published by ARTE France that addresses child sexual abuse through an uplifting, hopeful story. The game follows Tim, a man who experienced (as many people) sexual abuse as a child, whose repressed memories resurface while playing Orco Park, a theme park simulator from his childhood.',
+                personalNote: '[I will take my time to write this section]',
+                links: [
+                    { text: 'Play Game', url: 'https://wednesdays-game.arte.tv/', primary: true, icon: 'gamepad' },
+                    { text: 'ARTE France', url: 'https://www.arte.tv/', primary: false, icon: 'link' }
+                ]
+            },
             'game-title-1': {
                 title: 'Game Title 1',
                 platform: '',
