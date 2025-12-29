@@ -13,21 +13,19 @@
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-shadow-hover: rgba(0, 0, 0, 0.15);
     --shadow-highlight: rgba(224, 212, 253, 0.4);
-
-    /* New variables for dark theme */
     --dark-bg: #1a1a1a;
     --dark-surface: #2a2a2a;
     --dark-card-bg: #333333;
     --dark-border: #444444;
     --dark-text: #e0e0e0;
     --dark-text-muted: #b0b0b0;
-    --dark-accent: #8e2de2; /* A vibrant purple for highlights */
+    --dark-accent: #8e2de2;
     --dark-shadow: rgba(0, 0, 0, 0.5);
-    --dark-hover-glow: rgba(142, 45, 226, 0.3); /* Glow for hover effects */
-    --sidebar-width: 250px; /* Default sidebar width */
-    --header-height: 0px; /* Dynamic header height set by JS */
-    --footer-height: 0px; /* Dynamic footer height set by JS */
-    --mobile-header-height: 0px; /* Dynamic mobile header height set by JS */
+    --dark-hover-glow: rgba(142, 45, 226, 0.3);
+    --sidebar-width: 250px;
+    --header-height: 0px;
+    --footer-height: 0px;
+    --mobile-header-height: 0px;
 }
 
 body.dark {
@@ -79,7 +77,6 @@ body {
     }
 }
 
-/* Glass Navigation */
 header {
     position: fixed;
     top: 0;
@@ -144,7 +141,6 @@ nav a:hover::after {
     width: 100%;
 }
 
-/* Hero Section */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -173,7 +169,6 @@ nav a:hover::after {
     animation: fadeInUp 1s ease 0.2s backwards;
 }
 
-/* Glass Button */
 .enter-button {
     padding: 1rem 3.5rem;
     font-size: 1.1rem;
@@ -230,7 +225,6 @@ nav a:hover::after {
     }
 }
 
-/* Explore Section */
 .explore-section {
     min-height: 100vh;
     display: none;
@@ -431,7 +425,7 @@ a.wip-button:hover {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    margin-bottom: 40px; /* Creates space between last project card and the button */
+    margin-bottom: 40px;
     align-items: stretch;
 }
 
@@ -479,15 +473,13 @@ a.wip-button:hover {
     line-height: 1.5;
 }
 
-/* Button container – centers the button and adds extra top space */
 .button-container {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-top: 40px; /* Adjust this value if you want even more/less detachment */
+    margin-top: 40px;
 }
 
-/* Reuse your beautiful explore-button style for consistency */
 .button-container .explore-button {
     padding: 1rem 2.5rem;
     backdrop-filter: blur(10px);
@@ -508,7 +500,6 @@ a.wip-button:hover {
     box-shadow: 0 10px 30px var(--color-shadow);
 }
 
-/* Back button container for My Picks page */
 .back-button-container {
     display: flex;
     justify-content: center;
@@ -520,7 +511,6 @@ a.wip-button:hover {
     position: relative;
 }
 
-/* Add subtle top border for visual separation */
 .back-button-container::before {
     content: '';
     position: absolute;
@@ -537,10 +527,8 @@ a.wip-button:hover {
     );
 }
 
-/* Remove the old .back-button styles – no longer needed */
 .back-button { display: none; }
 
-/* Footer */
 footer {
     padding: 4rem 5% 2rem;
     backdrop-filter: blur(20px);
@@ -618,7 +606,6 @@ footer {
     font-size: 1.5rem;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
     .hero h1 {
         font-size: 4rem;
@@ -663,9 +650,6 @@ footer {
     text-shadow: 0 2px 10px var(--shadow-highlight);
 }
 
-
-
-/* My Picks Page Layout */
 .picks-container {
     max-width: 1100px;
     margin: 0 auto;
@@ -673,9 +657,9 @@ footer {
 }
 
 .picks-sidebar {
-    width: 100%; /* Fill the parent column */
+    width: 100%;
     position: sticky;
-    top: 120px; /* Adjust this value based on your navbar height */
+    top: 120px;
     background: rgba(var(--color-bg-glass), 0.5);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -703,7 +687,6 @@ footer {
 }
 
 .picks-content {
-    /* The .col-md-9 class handles the width */
     padding-left: 2rem;
 }
 
@@ -729,13 +712,10 @@ footer {
     }
 }
 
-
-/* Custom Bootstrap Styles */
-
 .card.project-card,
 .card.pick-item {
-    max-width: 300px; /* Limit card width */
-    margin: 0 auto; /* Center the card within its column */
+    max-width: 300px;
+    margin: 0 auto;
     background-color: rgba(var(--color-bg-glass), 0.25);
     border: 1px solid rgba(var(--color-border-glass), 0.4);
     backdrop-filter: blur(20px);
@@ -763,16 +743,12 @@ footer {
     color: var(--color-text-accent);
 }
 
-
-/* --- NEW MY PICKS PAGE STYLES (Glassmorphic Design) --- */
-
 .picks-page-container {
     min-height: 100vh;
     color: var(--color-text-primary);
     position: relative;
 }
 
-/* Page Header Section (Above Sidebar/Content) */
 .picks-page-header {
     text-align: center;
     padding: 5rem 5% 3rem;
@@ -796,12 +772,11 @@ footer {
     margin: 0 auto;
 }
 
-/* Mobile Sidebar Toggle Arrow Button */
 .sidebar-toggle-arrow {
-    display: none; /* Hidden by default, shown on mobile */
+    display: none;
     position: fixed;
     left: 0;
-    top: calc(var(--header-height) + var(--page-header-height) + 3rem); /* Position below page header */
+    top: calc(var(--header-height) + var(--page-header-height) + 3rem);
     width: 48px;
     height: 48px;
     backdrop-filter: blur(20px);
@@ -839,7 +814,6 @@ footer {
     pointer-events: none;
 }
 
-/* Glassmorphic Sidebar Styling */
 .picks-sidebar-new {
     width: var(--sidebar-width);
     flex-shrink: 0;
@@ -860,12 +834,10 @@ footer {
     transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.3s ease;
 }
 
-/* Sticky state: sidebar moves up to just below header when scrolled */
 .picks-sidebar-new.sticky {
     top: calc(var(--header-height) + 1.5rem);
 }
 
-/* Smooth transition when footer is visible */
 .picks-sidebar-new.footer-visible {
     transition: max-height 0.15s ease-out, top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -956,7 +928,6 @@ footer {
     color: var(--color-text-accent);
 }
 
-/* Main Content Styling */
 .picks-main-content {
     margin-top: calc(var(--header-height) + var(--page-header-height) + 2rem);
     padding: 1rem 5% 3rem;
@@ -986,7 +957,6 @@ footer {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* Card Grid */
 .picks-grid-new {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -994,7 +964,6 @@ footer {
     width: 100%;
 }
 
-/* Glassmorphic Pick Cards */
 .pick-card {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -1066,8 +1035,6 @@ footer {
     margin: 0;
 }
 
-
-/* Responsive Design for My Picks */
 @media (max-width: 992px) {
     :root {
         --sidebar-width: 220px;
@@ -1094,7 +1061,6 @@ footer {
         padding: 0 0.75rem 1rem 0.75rem;
     }
 
-    /* Maintain sticky behavior on tablets */
     .picks-sidebar-new.sticky {
         top: calc(var(--header-height) + 1.5rem);
     }
@@ -1198,7 +1164,6 @@ footer {
         padding: 1.25rem;
     }
 
-    /* Adjust back button spacing for tablets */
     .back-button-container {
         margin-top: 4rem;
         margin-bottom: 2.5rem;
@@ -1267,7 +1232,6 @@ footer {
         font-size: 0.9rem;
     }
 
-    /* Adjust back button spacing for mobile */
     .back-button-container {
         margin-top: 3.5rem;
         margin-bottom: 2rem;
