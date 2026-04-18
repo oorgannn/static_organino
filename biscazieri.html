@@ -1,375 +1,566 @@
 <!DOCTYPE html>
+<!--
+  BISCAZIERI — Casa Landing Page
+  ────────────────────────────────
+  Deploy: organino.org/biscazieri/index.html
+  URLs  : organino.org/biscazieri#music
+          organino.org/biscazieri#board
+          organino.org/biscazieri#games
+          … etc.
+-->
 <html lang="it">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<meta name="theme-color" content="#0D0F14"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#0E1018"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Biscazieri"/>
+<meta name="description" content="Casa Biscazieri — tutto in un posto"/>
 <title>✦ Biscazieri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@300;400&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root {
-  --bg:         #0D0F14;
-  --surface:    #1A1D26;
-  --surface2:   #22253A;
-  --border:     rgba(255,255,255,0.07);
-  --border2:    rgba(255,255,255,0.13);
-  --accent:     #E8B86D;
-  --accent-rgb: 232,184,109;
-  --accent2:    #7C6FCD;
-  --green:      #5FCF7E;
-  --cream:      #EDE8DF;
-  --muted:      rgba(237,232,223,0.42);
-  --muted2:     rgba(237,232,223,0.20);
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans:  'Lato', sans-serif;
-  --font-mono:  'IBM Plex Mono', monospace;
-  --r:          16px;
-  --ease:       cubic-bezier(.4,0,.2,1);
-}
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
-html { scroll-behavior:smooth }
-body {
-  background:var(--bg); color:var(--cream);
-  font-family:var(--font-sans); font-weight:300; line-height:1.65;
-  min-height:100dvh; overflow-x:hidden;
-}
-body::after {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
-  background-size:300px; opacity:.45;
-}
-#app { position:relative; z-index:1 }
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS — modifica per rethemizzare
+═══════════════════════════════════════════ */
+:root{
+  --bg:       #0E1018;
+  --bg1:      #141720;
+  --bg2:      #1C2030;
+  --bg3:      #242840;
+  --bdr:      rgba(255,255,255,.07);
+  --bdr2:     rgba(255,255,255,.13);
+  --acc:      #D4956A;       /* terracotta caldo */
+  --acc-r:    212,149,106;
+  --acc2:     #8B7EC8;       /* viola secondario */
+  --acc2-r:   139,126,200;
+  --grn:      #62C084;
+  --cream:    #EEE8DC;
+  --mut:      rgba(238,232,220,.45);
+  --mut2:     rgba(238,232,220,.22);
+  --serif:    'Libre Baskerville', Georgia, serif;
+  --mono:     'JetBrains Mono', monospace;
+  --r:        14px;
+  --ease:     cubic-bezier(.4,0,.2,1);
+  --ease-out: cubic-bezier(0,.55,.45,1);
 
-/* ── TOPBAR ── */
-.topbar {
-  position:sticky; top:0; z-index:200;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:15px 22px;
-  background:rgba(13,15,20,.92);
-  backdrop-filter:blur(20px) saturate(1.5);
-  -webkit-backdrop-filter:blur(20px) saturate(1.5);
-  border-bottom:1px solid var(--border);
+  /* BOTTOM NAV HEIGHT (mobile) */
+  --nav-h: calc(60px + env(safe-area-inset-bottom, 0px));
 }
-.logo {
-  font-family:var(--font-serif); font-size:1.08rem; font-weight:400;
-  color:var(--accent); cursor:pointer; letter-spacing:.04em;
-  display:flex; align-items:center; gap:7px;
-}
-.logo-sec  { color:var(--muted); font-size:.85em }
-.logo-div  { color:var(--border2) }
-.back {
-  display:none; align-items:center; gap:6px;
-  background:none; border:1px solid var(--border2);
-  color:var(--muted); padding:6px 16px; border-radius:99px; cursor:pointer;
-  font-family:var(--font-mono); font-size:.68rem; letter-spacing:.08em;
-  transition:color .25s, border-color .25s, background .25s;
-}
-.back.on  { display:flex }
-.back:hover { color:var(--cream); border-color:var(--accent); background:rgba(var(--accent-rgb),.08) }
 
-/* ── PAGES ── */
-.page { display:none; animation:fu .38s var(--ease) both }
-.page.active { display:block }
-@keyframes fu { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);color:var(--cream);
+  font-family:var(--serif);font-weight:400;line-height:1.6;
+  min-height:100dvh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
 
-/* ── HERO ── */
-.hero {
-  padding:64px 22px 38px; text-align:center; position:relative;
+/* Grain */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.038'/%3E%3C/svg%3E");
+  background-size:256px;opacity:.5;
 }
-.hero::before {
-  content:''; position:absolute; inset:0; z-index:-1;
-  background:radial-gradient(ellipse 75% 55% at 50% -5%, rgba(var(--accent-rgb),.09) 0%, transparent 70%);
-}
-.eyebrow {
-  font-family:var(--font-mono); font-size:.63rem;
-  letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:12px;
-}
-.hero h1 {
-  font-family:var(--font-serif); font-size:clamp(2.8rem,11vw,5.8rem);
-  font-weight:400; line-height:1.02; letter-spacing:-.01em; color:var(--cream);
-}
-.hero h1 em { color:var(--accent); font-style:italic }
-.hero-addr {
-  font-family:var(--font-mono); font-size:.68rem; color:var(--muted);
-  letter-spacing:.12em; text-transform:uppercase; margin-top:10px;
-}
-.hero-line { width:48px; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); margin:28px auto 0 }
 
-/* ── GRID ── */
-.grid {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr));
-  gap:11px; padding:32px 16px 24px; max-width:720px; margin:0 auto;
+/* ═══ LAYOUT ═══ */
+#app{
+  position:relative;z-index:1;
+  /* bottom padding so content never hides behind bottom nav on mobile */
+  padding-bottom: var(--nav-h);
 }
-.card {
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
-  padding:22px 15px 18px; cursor:pointer; position:relative; overflow:hidden;
-  transition:transform .28s var(--ease), border-color .28s, box-shadow .28s;
+@media(min-width:680px){ #app{ padding-bottom:0; } }
+
+/* ═══ TOP BAR ═══ */
+.bar{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;height:54px;padding:0 18px;gap:10px;
+  background:rgba(14,16,24,.9);
+  backdrop-filter:blur(20px) saturate(1.8);
+  -webkit-backdrop-filter:blur(20px) saturate(1.8);
+  border-bottom:1px solid var(--bdr);
+}
+.bar-logo{
+  font-family:var(--serif);font-size:1.05rem;color:var(--acc);
+  cursor:pointer;letter-spacing:.02em;white-space:nowrap;flex-shrink:0;
+}
+.bar-crumb{
+  font-family:var(--mono);font-size:.65rem;color:var(--mut);
+  letter-spacing:.08em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  flex:1;
+}
+.bar-back{
+  display:none;align-items:center;justify-content:center;
+  background:none;border:none;color:var(--mut);cursor:pointer;
+  padding:8px;border-radius:50%;min-width:40px;min-height:40px;
+  transition:color .2s,background .2s;flex-shrink:0;
+}
+.bar-back.on{display:flex}
+.bar-back:hover,.bar-back:active{color:var(--cream);background:var(--bg2)}
+
+/* ═══ BOTTOM NAV (mobile only) ═══ */
+.bnav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:rgba(14,16,24,.92);
+  backdrop-filter:blur(24px) saturate(1.8);
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);
+  border-top:1px solid var(--bdr);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media(max-width:679px){ .bnav{ display:block; } }
+.bnav-inner{
+  display:flex;align-items:center;
+  height:60px;
+}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;padding:6px 4px;
+  border:none;background:none;
+  color:var(--mut);font-family:var(--mono);font-size:.55rem;letter-spacing:.06em;
+  transition:color .2s;
   -webkit-tap-highlight-color:transparent;
-  animation:ci .45s var(--ease) both;
+  min-height:48px;
 }
-.card:nth-child(1){animation-delay:.04s} .card:nth-child(2){animation-delay:.09s}
-.card:nth-child(3){animation-delay:.14s} .card:nth-child(4){animation-delay:.19s}
-.card:nth-child(5){animation-delay:.24s} .card:nth-child(6){animation-delay:.29s}
-.card:nth-child(7){animation-delay:.34s} .card:nth-child(8){animation-delay:.39s}
-.card:nth-child(9){animation-delay:.44s} .card:nth-child(10){animation-delay:.49s}
-@keyframes ci { from{opacity:0;transform:translateY(11px) scale(.97)} to{opacity:1;transform:none} }
-.card::before {
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse at 25% 0%, rgba(var(--accent-rgb),.1), transparent 65%);
-  opacity:0; transition:opacity .28s;
+.bnav-item .ni{font-size:1.25rem;line-height:1}
+.bnav-item span{font-size:.55rem;margin-top:1px}
+.bnav-item.active,.bnav-item:active{color:var(--acc)}
+
+/* Bottom sheet "Altro" */
+.sheet-overlay{
+  display:none;position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
 }
-.card:hover  { transform:translateY(-5px); border-color:rgba(var(--accent-rgb),.35); box-shadow:0 16px 48px rgba(0,0,0,.3) }
-.card:hover::before { opacity:1 }
-.card:active { transform:scale(.96) }
-.c-badge {
-  position:absolute; top:10px; right:10px;
-  background:var(--accent); color:var(--bg);
-  font-family:var(--font-mono); font-size:.52rem;
-  padding:2px 8px; border-radius:99px; letter-spacing:.07em; text-transform:uppercase;
+.sheet-overlay.on{display:block}
+.sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:401;
+  background:var(--bg1);border-radius:20px 20px 0 0;
+  border-top:1px solid var(--bdr2);
+  padding:0 0 env(safe-area-inset-bottom,16px);
+  transform:translateY(100%);transition:transform .35s var(--ease-out);
 }
-.c-badge.pur { background:var(--accent2); color:#fff }
-.c-badge.grn { background:var(--green);   color:var(--bg) }
-.c-icon  { font-size:1.65rem; display:block; margin-bottom:12px; position:relative; z-index:1 }
-.c-title { font-family:var(--font-serif); font-size:1.02rem; color:var(--cream); margin-bottom:3px; position:relative; z-index:1 }
-.c-sub   { font-family:var(--font-mono);  font-size:.6rem;   color:var(--muted); letter-spacing:.04em; line-height:1.4; position:relative; z-index:1 }
-
-/* ── INNER ── */
-.inner { max-width:640px; margin:0 auto; padding:34px 20px 80px }
-.ph { margin-bottom:30px }
-.ph .eyebrow { margin-bottom:5px }
-.ph h1 { font-family:var(--font-serif); font-size:clamp(1.9rem,7vw,2.9rem); font-weight:400; line-height:1.08; color:var(--cream) }
-.ph p  { margin-top:9px; color:var(--muted); font-size:.92rem; line-height:1.7 }
-
-/* ── INFO BLOCKS ── */
-.ib { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:17px 19px; margin-bottom:11px }
-.ib label { display:block; font-family:var(--font-mono); font-size:.58rem; letter-spacing:.18em; color:var(--accent); text-transform:uppercase; margin-bottom:5px }
-.crow { display:flex; align-items:center; justify-content:space-between; gap:10px }
-
-/* ── BUTTONS ── */
-.btn { display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:.72rem; letter-spacing:.08em; padding:10px 20px; border-radius:99px; cursor:pointer; border:none; text-decoration:none; transition:all .25s var(--ease); white-space:nowrap }
-.btn-p { background:var(--accent); color:var(--bg) }
-.btn-p:hover { background:#f0c97e; transform:translateY(-2px); box-shadow:0 8px 24px rgba(var(--accent-rgb),.3) }
-.btn-s { background:none; border:1px solid var(--border2); color:var(--muted) }
-.btn-s:hover { border-color:var(--accent); color:var(--cream); background:rgba(var(--accent-rgb),.07) }
-.btn-g { background:none; border:1px solid var(--border); color:var(--muted); padding:5px 13px; font-size:.64rem }
-.btn-g:hover { color:var(--cream); border-color:var(--accent) }
-.btn-v { background:var(--accent2); color:#fff }
-.btn-v:hover { background:#9487d8; transform:translateY(-2px); box-shadow:0 8px 24px rgba(124,111,205,.3) }
-.btn-row { display:flex; flex-wrap:wrap; gap:9px; margin-top:16px }
-
-/* ── LINK CARDS ── */
-.lc { display:flex; align-items:center; gap:13px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:15px 17px; text-decoration:none; color:var(--cream); margin-bottom:9px; transition:border-color .25s, background .25s, transform .25s; -webkit-tap-highlight-color:transparent }
-.lc:hover     { border-color:rgba(var(--accent-rgb),.35); background:rgba(var(--accent-rgb),.05); transform:translateX(3px) }
-.lc.yt:hover  { border-color:rgba(229,57,53,.4);  background:rgba(229,57,53,.04) }
-.lc.vio:hover { border-color:rgba(124,111,205,.4); background:rgba(124,111,205,.04) }
-.lc-icon  { font-size:1.4rem; flex-shrink:0 }
-.lc-body  { flex:1; min-width:0 }
-.lc-title { font-family:var(--font-serif); font-size:.97rem; font-weight:400 }
-.lc-desc  { font-family:var(--font-mono);  font-size:.62rem; color:var(--muted); margin-top:1px; line-height:1.3 }
-.lc-arr   { color:var(--muted2); flex-shrink:0; font-size:.85rem }
-
-/* ── SEPARATOR ── */
-.sep { display:flex; align-items:center; gap:11px; margin:20px 0; color:var(--muted2); font-family:var(--font-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase }
-.sep::before, .sep::after { content:''; flex:1; height:1px; background:var(--border) }
-
-/* ── RULES ── */
-.rules { list-style:none }
-.rules li { display:flex; align-items:flex-start; gap:13px; padding:14px 0; border-bottom:1px solid var(--border); font-size:.9rem; line-height:1.55 }
-.rules li:last-child { border-bottom:none }
-.r-icon { font-size:1rem; flex-shrink:0; margin-top:2px }
-.r-text { color:var(--muted) }
-.r-text strong { color:var(--accent); font-weight:400; font-family:var(--font-serif); font-size:.97rem; display:block; margin-bottom:1px }
-
-/* ── CONTACTS ── */
-.c-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:13px 0; border-bottom:1px solid var(--border) }
-.c-row:last-child { border-bottom:none }
-.cn { font-family:var(--font-serif); font-size:.95rem }
-.cd { font-family:var(--font-mono);  font-size:.62rem; color:var(--muted); margin-top:1px }
-
-/* ── MAP ── */
-.map-wrap { border-radius:var(--r); overflow:hidden; border:1px solid var(--border); height:255px; margin:14px 0 22px }
-.map-wrap iframe { width:100%; height:100%; border:none; display:block; filter:invert(1) hue-rotate(180deg) brightness(.82) saturate(.55) }
-
-/* ── GAMES ── */
-.game-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(138px,1fr)); gap:9px; margin-top:4px }
-.gc { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:19px 13px 15px; text-decoration:none; color:var(--cream); display:block; transition:transform .25s, border-color .25s, background .25s; -webkit-tap-highlight-color:transparent }
-.gc:hover { transform:translateY(-4px); border-color:rgba(var(--accent-rgb),.35); background:rgba(var(--accent-rgb),.04) }
-.gc-icon { font-size:1.55rem; margin-bottom:9px; display:block }
-.gc-name { font-family:var(--font-serif); font-size:.92rem; margin-bottom:3px }
-.gc-sub  { font-family:var(--font-mono);  font-size:.58rem; color:var(--muted); line-height:1.35 }
-
-/* ── FOOD ── */
-.food-note { background:rgba(var(--accent-rgb),.08); border:1px solid rgba(var(--accent-rgb),.18); border-radius:10px; padding:11px 15px; font-family:var(--font-mono); font-size:.68rem; color:var(--accent); line-height:1.5; margin-bottom:16px }
-
-/* ── GUESTBOOK ── */
-.tally-open {
-  display:flex; flex-direction:column; align-items:center;
-  gap:10px; padding:36px 20px; text-align:center;
+.sheet.on{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--bg3);border-radius:2px;margin:12px auto 6px}
+.sheet-title{font-family:var(--mono);font-size:.65rem;color:var(--mut2);letter-spacing:.14em;text-transform:uppercase;padding:8px 20px 10px}
+.sheet-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--bdr);margin:0 16px 16px;
+  border-radius:var(--r);overflow:hidden;
 }
-.tally-open p { font-family:var(--font-mono); font-size:.68rem; color:var(--muted); letter-spacing:.05em; line-height:1.8 }
-
-/* ── THANKS ── */
-.thanks-hero { padding:70px 22px 20px; text-align:center; position:relative }
-.thanks-hero::before {
-  content:''; position:absolute; inset:0; z-index:-1;
-  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(95,207,126,.07) 0%, transparent 70%);
+.sheet-item{
+  background:var(--bg2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:18px 10px;cursor:pointer;
+  border:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .2s;
 }
-.thanks-big {
-  font-family:var(--font-serif); font-size:clamp(3.5rem,14vw,7rem);
-  font-weight:400; line-height:.95; letter-spacing:-.02em; color:var(--cream); margin:14px 0 8px;
+.sheet-item:active{background:var(--bg3)}
+.sheet-item .si-icon{font-size:1.4rem}
+.sheet-item .si-label{font-family:var(--mono);font-size:.6rem;color:var(--mut);letter-spacing:.05em;text-align:center;line-height:1.3}
+
+/* ═══ PAGES ═══ */
+.page{
+  display:none;
+  animation:slideIn .32s var(--ease-out) both;
 }
-.thanks-big em { color:var(--green); font-style:italic }
-.thanks-sub { font-family:var(--font-mono); font-size:.72rem; color:var(--muted); letter-spacing:.1em; line-height:1.8; margin-top:12px }
-.thanks-divider { width:64px; height:1px; background:linear-gradient(90deg,transparent,var(--green),transparent); margin:28px auto }
-.thanks-pills { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 auto 32px; max-width:480px }
-.t-pill { font-family:var(--font-mono); font-size:.62rem; letter-spacing:.08em; padding:6px 15px; border-radius:99px; border:1px solid rgba(95,207,126,.25); color:rgba(95,207,126,.75); background:rgba(95,207,126,.05) }
-.thanks-quote      { font-family:var(--font-serif); font-size:1.08rem; font-style:italic; color:var(--muted); line-height:1.7; max-width:380px; margin:0 auto 10px }
-.thanks-quote-attr { font-family:var(--font-mono); font-size:.58rem; color:var(--muted2); letter-spacing:.14em; text-transform:uppercase; text-align:center; margin-bottom:36px }
-.thanks-confetti   { font-size:2rem; letter-spacing:.15em; margin-bottom:6px; animation:bounce 2s ease-in-out infinite; display:block; text-align:center }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-.thanks-sign { font-family:var(--font-serif); font-size:1.22rem; color:var(--accent); text-align:center; margin-top:8px; font-style:italic }
+.page.active{display:block}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(18px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.page#page-home{
+  animation:fadeIn .4s var(--ease) both;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-/* ── TOAST ── */
-#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(8px); background:var(--surface2); border:1px solid var(--border2); color:var(--cream); font-family:var(--font-mono); font-size:.7rem; padding:9px 18px; border-radius:99px; z-index:9999; opacity:0; transition:opacity .25s, transform .25s; pointer-events:none; white-space:nowrap; letter-spacing:.06em }
-#toast.on { opacity:1; transform:translateX(-50%) translateY(0) }
+/* ═══ HOME ═══ */
+.hero{
+  padding:52px 20px 28px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:min(500px,140vw);height:320px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(var(--acc-r),.1) 0%,transparent 65%);
+  pointer-events:none;
+}
+.eyebrow{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--acc);margin-bottom:10px;
+}
+.hero-title{
+  font-size:clamp(2.6rem,10vw,5rem);font-weight:400;line-height:1.03;
+  letter-spacing:-.01em;color:var(--cream);
+}
+.hero-title em{color:var(--acc);font-style:italic}
+.hero-addr{
+  font-family:var(--mono);font-size:.64rem;color:var(--mut2);
+  letter-spacing:.12em;text-transform:uppercase;margin-top:8px;
+}
+.hero-line{
+  width:44px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--acc),transparent);
+  margin:22px auto 0;
+}
 
-/* ── FOOTER ── */
-.footer { text-align:center; padding:26px 18px 40px; font-family:var(--font-mono); font-size:.58rem; color:var(--muted2); letter-spacing:.14em; text-transform:uppercase; border-top:1px solid var(--border) }
+/* Card grid */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;padding:24px 16px 16px;
+  max-width:720px;margin:0 auto;
+}
+@media(max-width:360px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:680px){.grid{grid-template-columns:repeat(3,1fr);gap:12px;padding:28px 24px}}
 
-::-webkit-scrollbar       { width:3px }
-::-webkit-scrollbar-track { background:var(--bg) }
-::-webkit-scrollbar-thumb { background:var(--surface2); border-radius:2px }
+.card{
+  background:var(--bg1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:18px 12px 15px;cursor:pointer;position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .25s var(--ease),border-color .25s,box-shadow .25s;
+  animation:cIn .45s var(--ease) both;
+}
+.card:nth-child(1){animation-delay:.03s}.card:nth-child(2){animation-delay:.07s}
+.card:nth-child(3){animation-delay:.11s}.card:nth-child(4){animation-delay:.15s}
+.card:nth-child(5){animation-delay:.19s}.card:nth-child(6){animation-delay:.23s}
+.card:nth-child(7){animation-delay:.27s}.card:nth-child(8){animation-delay:.31s}
+.card:nth-child(9){animation-delay:.35s}
+@keyframes cIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 0%,rgba(var(--acc-r),.1),transparent 60%);
+  opacity:0;transition:opacity .25s;
+}
+.card:active{transform:scale(.95)}
+@media(hover:hover){
+  .card:hover{transform:translateY(-4px);border-color:rgba(var(--acc-r),.35);box-shadow:0 12px 36px rgba(0,0,0,.3)}
+  .card:hover::before{opacity:1}
+}
+.c-badge{
+  position:absolute;top:8px;right:8px;
+  background:var(--acc);color:var(--bg);
+  font-family:var(--mono);font-size:.5rem;padding:2px 7px;
+  border-radius:99px;letter-spacing:.07em;text-transform:uppercase;
+}
+.c-badge.v{background:var(--acc2);color:#fff}
+.c-icon{font-size:1.55rem;display:block;margin-bottom:9px;position:relative;z-index:1}
+.c-title{font-size:.95rem;font-weight:700;color:var(--cream);margin-bottom:2px;position:relative;z-index:1}
+.c-sub{font-family:var(--mono);font-size:.57rem;color:var(--mut);letter-spacing:.03em;line-height:1.35;position:relative;z-index:1}
 
-@media(max-width:460px) {
-  .grid { grid-template-columns:repeat(2,1fr); gap:9px; padding:22px 13px }
-  .hero { padding:44px 16px 28px }
+/* ═══ INNER PAGES ═══ */
+.inner{max-width:640px;margin:0 auto;padding:28px 18px 32px}
+@media(min-width:680px){.inner{padding:36px 28px 48px}}
+.ph{margin-bottom:26px}
+.ph .eyebrow{margin-bottom:4px}
+.ph h1{font-size:clamp(1.8rem,6vw,2.8rem);font-weight:400;line-height:1.1;color:var(--cream)}
+.ph p{margin-top:8px;font-family:var(--mono);font-size:.72rem;color:var(--mut);line-height:1.7;letter-spacing:.02em}
+
+/* ═══ BLOCKS ═══ */
+.blk{
+  background:var(--bg1);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:16px 18px;margin-bottom:10px;
+}
+.blk label{
+  display:block;font-family:var(--mono);font-size:.56rem;
+  letter-spacing:.18em;color:var(--acc);text-transform:uppercase;margin-bottom:5px;
+}
+.blk .val{font-size:1.05rem;color:var(--cream)}
+.blk .val.m{font-family:var(--mono);font-size:.88rem}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* ═══ BUTTONS ═══ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;
+  border-radius:99px;cursor:pointer;border:none;text-decoration:none;
+  transition:all .22s var(--ease);white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+  min-height:44px;padding:0 20px;
+}
+.btn-p{background:var(--acc);color:var(--bg);font-weight:400}
+.btn-p:active{background:#be845a}
+@media(hover:hover){.btn-p:hover{background:#e0a87a;box-shadow:0 6px 20px rgba(var(--acc-r),.3)}}
+.btn-s{background:none;border:1px solid var(--bdr2);color:var(--mut)}
+.btn-s:active{background:var(--bg2)}
+@media(hover:hover){.btn-s:hover{border-color:var(--acc);color:var(--cream)}}
+.btn-g{background:none;border:1px solid var(--bdr);color:var(--mut);min-height:38px;padding:0 14px;font-size:.65rem}
+.btn-g:active{background:var(--bg2)}
+@media(hover:hover){.btn-g:hover{border-color:var(--acc);color:var(--cream)}}
+.btn-g.ok{color:var(--grn);border-color:var(--grn)}
+.btn-v{background:var(--acc2);color:#fff}
+.btn-v:active{background:#7868b0}
+.brow{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+
+/* ═══ LINK CARDS ═══ */
+.lc{
+  display:flex;align-items:center;gap:13px;
+  background:var(--bg1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:14px 16px;text-decoration:none;color:var(--cream);
+  margin-bottom:9px;min-height:62px;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color .22s,background .22s;
+}
+.lc:active{background:var(--bg2)}
+@media(hover:hover){
+  .lc:hover{border-color:rgba(var(--acc-r),.35);background:rgba(var(--acc-r),.04)}
+  .lc.yt:hover{border-color:rgba(255,80,80,.35);background:rgba(255,80,80,.04)}
+}
+.li{font-size:1.35rem;flex-shrink:0;width:36px;text-align:center}
+.lb{flex:1;min-width:0}
+.lt{font-size:.94rem;font-weight:700}
+.ld{font-family:var(--mono);font-size:.6rem;color:var(--mut);margin-top:1px;line-height:1.3}
+.la{color:var(--mut2);flex-shrink:0;font-size:.82rem}
+
+/* ═══ SEPARATOR ═══ */
+.sep{
+  display:flex;align-items:center;gap:10px;margin:18px 0;
+  color:var(--mut2);font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* ═══ MAP ═══ */
+.map-wrap{
+  border-radius:var(--r);overflow:hidden;border:1px solid var(--bdr);
+  height:240px;margin:14px 0 20px;
+}
+.map-wrap iframe{
+  width:100%;height:100%;border:none;display:block;
+  filter:invert(1) hue-rotate(180deg) brightness(.82) saturate(.5);
+}
+
+/* ═══ GAMES ═══ */
+.games-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:9px;
+}
+@media(min-width:420px){.games-grid{grid-template-columns:repeat(3,1fr)}}
+.gc{
+  background:var(--bg1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:16px 12px 14px;text-decoration:none;color:var(--cream);display:block;
+  min-height:96px;-webkit-tap-highlight-color:transparent;
+  transition:border-color .22s,background .22s;
+}
+.gc:active{background:var(--bg2)}
+@media(hover:hover){.gc:hover{border-color:rgba(var(--acc-r),.35);background:rgba(var(--acc-r),.04)}}
+.gc-icon{font-size:1.4rem;margin-bottom:8px;display:block}
+.gc-name{font-size:.87rem;font-weight:700;margin-bottom:3px}
+.gc-sub{font-family:var(--mono);font-size:.58rem;color:var(--mut);line-height:1.35}
+
+/* ═══ FOOD NOTE ═══ */
+.food-note{
+  background:rgba(var(--acc-r),.08);border:1px solid rgba(var(--acc-r),.18);
+  border-radius:10px;padding:11px 15px;
+  font-family:var(--mono);font-size:.66rem;color:var(--acc);line-height:1.5;margin-bottom:14px;
+}
+
+/* ═══ GUESTBOOK ═══ */
+.gb-inp{
+  background:none;border:none;outline:none;width:100%;
+  color:var(--cream);font-family:var(--serif);font-size:.98rem;resize:none;line-height:1.65;
+}
+.gb-inp::placeholder{color:var(--mut2)}
+.stars span{
+  font-size:1.4rem;cursor:pointer;transition:transform .15s,color .15s;
+  display:inline-block;margin-right:3px;
+}
+.stars span.lit{color:var(--acc)}
+.gb-item{padding:12px 0;border-bottom:1px solid var(--bdr);animation:fadeIn .3s both}
+.gb-item:last-child{border-bottom:none}
+.gb-name{font-size:.92rem;font-weight:700;color:var(--acc)}
+.gb-star{font-size:.75rem;margin:0 4px;opacity:.8}
+.gb-text{font-family:var(--mono);font-size:.7rem;color:var(--mut);margin-top:3px;line-height:1.55}
+.gb-date{font-family:var(--mono);font-size:.56rem;color:var(--mut2);margin-top:3px}
+
+/* ═══ TALLY NOTE ═══ */
+.tally-box{
+  background:rgba(var(--acc-r),.07);border:1px solid rgba(var(--acc-r),.15);
+  border-radius:var(--r);padding:15px 17px;margin-bottom:14px;
+}
+.tally-box p{font-family:var(--mono);font-size:.67rem;color:var(--mut);line-height:1.8;letter-spacing:.02em}
+.tally-box p strong{color:var(--acc);font-weight:400}
+
+/* ═══ QR ═══ */
+.qr-wrap{text-align:center;margin:14px 0}
+.qr-inner{background:#fff;border-radius:10px;padding:12px;display:inline-flex}
+.qr-label{font-family:var(--mono);font-size:.6rem;color:var(--mut);letter-spacing:.08em;margin-top:8px}
+
+/* ═══ PHOTO PH ═══ */
+.photo-ph{
+  background:var(--bg1);border:2px dashed var(--bdr2);border-radius:var(--r);
+  padding:32px 20px;text-align:center;color:var(--mut2);
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;margin-bottom:14px;
+}
+
+/* ═══ TOAST ═══ */
+#toast{
+  position:fixed;bottom:calc(var(--nav-h) + 12px);left:50%;
+  transform:translateX(-50%) translateY(8px);
+  background:var(--bg2);border:1px solid var(--bdr2);color:var(--cream);
+  font-family:var(--mono);font-size:.68rem;padding:9px 18px;border-radius:99px;
+  z-index:9999;opacity:0;transition:opacity .22s,transform .22s;
+  pointer-events:none;white-space:nowrap;letter-spacing:.05em;
+}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:680px){#toast{bottom:20px}}
+
+/* ═══ FOOTER ═══ */
+.footer{
+  text-align:center;padding:22px 18px 28px;
+  font-family:var(--mono);font-size:.56rem;color:var(--mut2);
+  letter-spacing:.14em;text-transform:uppercase;border-top:1px solid var(--bdr);
+}
+
+/* ═══ INPUT RESET ═══ */
+input,textarea{font-family:var(--serif);font-size:.95rem;color:var(--cream)}
+input::placeholder,textarea::placeholder{color:var(--mut2)}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px}
+
+/* ═══ DESKTOP OVERRIDES ═══ */
+@media(min-width:680px){
+  .hero{padding:72px 28px 40px}
+  .grid{grid-template-columns:repeat(3,1fr)}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <span class="logo" onclick="go('home')">
-    ✦ Biscazieri
-    <span class="logo-div" id="tb-div" style="display:none">/</span>
-    <span class="logo-sec" id="tb-sec"></span>
-  </span>
-  <button class="back" id="back-btn" onclick="go('home')">← Home</button>
+<!-- TOP BAR -->
+<div class="bar">
+  <button class="bar-back" id="back-btn" onclick="go('')" aria-label="Torna alla home">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M12 5L7 10L12 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <span class="bar-logo" onclick="go('')">✦ Biscazieri</span>
+  <span class="bar-crumb" id="bar-crumb"></span>
 </div>
 
 <div id="app">
 
-<!-- HOME -->
-<div id="page-home" class="page">
+<!-- ════════ HOME ════════ -->
+<div id="page-" class="page">
   <div class="hero">
     <p class="eyebrow">✦ benvenuto</p>
-    <h1>Casa<br/><em>Biscazieri</em></h1>
+    <h1 class="hero-title">Casa<br/><em>Biscazieri</em></h1>
     <p class="hero-addr" id="hero-addr"></p>
     <div class="hero-line"></div>
   </div>
   <div class="grid" id="home-grid"></div>
-  <div class="footer">biscazieri · 2025</div>
+  <div class="footer">organino.org/biscazieri · 2026</div>
 </div>
 
-<!-- MUSIC -->
+<!-- ════════ MUSIC ════════ -->
 <div id="page-music" class="page">
   <div class="inner">
     <div class="ph">
       <p class="eyebrow">♫ musica</p>
       <h1>Playlist<br/>condivise</h1>
-      <p>Ascolta, aggiungi, scegli il mood. Le playlist sono aperte a tutti.</p>
+      <p>Ascolta, aggiungi, scegli il mood. Aperte a tutti.</p>
     </div>
+
     <div class="sep">Spotify</div>
     <a class="lc" id="lc-sp-pl" href="#" target="_blank" rel="noopener">
-      <span class="lc-icon">🎵</span>
-      <div class="lc-body"><div class="lc-title">I TROIAIO</div><div class="lc-desc">Open in Spotify</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">🎵</span>
+      <div class="lb"><div class="lt">Playlist Biscazieri</div><div class="ld">Apri su Spotify · playlist collaborativa</div></div>
+      <span class="la">↗</span>
     </a>
+    <a class="lc" id="lc-sp-jam" href="#" target="_blank" rel="noopener">
+      <span class="li">🎛️</span>
+      <div class="lb"><div class="lt">Spotify Jam — live</div><div class="ld">Aggiungi brani alla coda in tempo reale</div></div>
+      <span class="la">↗</span>
+    </a>
+
     <div class="sep">YouTube Music</div>
     <a class="lc yt" id="lc-yt1" href="#" target="_blank" rel="noopener">
-      <span class="lc-icon">🎵</span>
-      <div class="lc-body"><div class="lc-title">I TROIAIO</div><div class="lc-desc">Open YouTube Music</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">▶️</span>
+      <div class="lb"><div class="lt">Playlist principale</div><div class="ld">YouTube Music</div></div>
+      <span class="la">↗</span>
     </a>
+
+    <div class="sep">Suggerisci un brano</div>
+    <div class="blk">
+      <label>Artista / Canzone</label>
+      <div class="row">
+        <input id="song-in" type="text" placeholder="es. Lucio Battisti — Emozioni"
+          style="background:none;border:none;outline:none;flex:1;min-width:0"/>
+        <button class="btn btn-g" onclick="copySong()">Copia</button>
+      </div>
+    </div>
+    <p style="font-family:var(--mono);font-size:.6rem;color:var(--mut2);letter-spacing:.04em">
+      Copia → incollalo nella chat di Spotify Jam
+    </p>
   </div>
 </div>
 
-<!-- BOARD -->
+<!-- ════════ BOARD ════════ -->
 <div id="page-board" class="page">
   <div class="inner">
     <div class="ph">
       <p class="eyebrow">✏️ lavagna</p>
       <h1>Lavagna<br/>infinita</h1>
-      <p>Disegna, scrivi, lascia idee. Nessun account richiesto.</p>
+      <p>Disegna, scrivi, lascia idee. Zero account, zero login.</p>
     </div>
     <a class="lc" id="lc-board" href="#" target="_blank" rel="noopener">
-      <span class="lc-icon">🖊️</span>
-      <div class="lc-body"><div class="lc-title">Apri la lavagna condivisa</div><div class="lc-desc">Write and draw whatever you want, this is the troiaio digitale!</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">🖊️</span>
+      <div class="lb"><div class="lt">Apri la lavagna</div><div class="ld">Excalidraw · Write and Draw lo que quieres</div></div>
+      <span class="la">↗</span>
     </a>
   </div>
 </div>
 
-<!-- GAMES -->
+<!-- ════════ GAMES ════════ -->
 <div id="page-games" class="page">
   <div class="inner">
     <div class="ph">
       <p class="eyebrow">🎮 giochi</p>
       <h1>Giochi<br/>online</h1>
-      <p>Multiplayer dal telefono. Nessuna app — apri e gioca.</p>
+      <p>Multiplayer dal browser. Nessuna app. Una persona crea la stanza, tutti entrano con il codice.</p>
     </div>
-    <div class="game-grid" id="games-grid"></div>
-    <div class="ib" style="margin-top:20px">
-      <label>Come funziona</label>
-      <p style="font-family:var(--font-mono);font-size:.66rem;color:var(--muted);line-height:1.85;letter-spacing:.03em">
-        Una persona crea la stanza, gli altri entrano con il codice. Nessun account richiesto.
-      </p>
-    </div>
+    <div class="games-grid" id="games-grid"></div>
   </div>
 </div>
 
-<!-- FOOD -->
+<!-- ════════ FOOD ════════ -->
 <div id="page-food" class="page">
   <div class="inner">
     <div class="ph">
       <p class="eyebrow">🍕 cibo</p>
       <h1>Ordina<br/>a casa</h1>
-      <p>Delivery rapido in zona.</p>
+      <p>Delivery in zona. Clicca e ordina direttamente.</p>
     </div>
     <div class="food-note">✦ Consegna a: <strong id="food-addr"></strong></div>
-    <a class="lc" href="https://www.deliveroo.it" target="_blank" rel="noopener">
-      <span class="lc-icon">🛵</span>
-      <div class="lc-body"><div class="lc-title">Deliveroo</div><div class="lc-desc">Ristoranti vicini · 20–40 min</div></div>
-      <span class="lc-arr">↗</span>
+    <a class="lc" href="https://deliveroo.it" target="_blank" rel="noopener">
+      <span class="li">🛵</span>
+      <div class="lb"><div class="lt">Deliveroo</div><div class="ld">Ristoranti · 20–40 min</div></div>
+      <span class="la">↗</span>
     </a>
-    <a class="lc" href="https://www.ubereats.com" target="_blank" rel="noopener">
-      <span class="lc-icon">🚗</span>
-      <div class="lc-body"><div class="lc-title">Uber Eats</div><div class="lc-desc">Ampia scelta · promo disponibili</div></div>
-      <span class="lc-arr">↗</span>
+    <a class="lc" href="https://www.ubereats.com/it" target="_blank" rel="noopener">
+      <span class="li">🚗</span>
+      <div class="lb"><div class="lt">Uber Eats</div><div class="ld">Ampia scelta · promo disponibili</div></div>
+      <span class="la">↗</span>
     </a>
     <a class="lc" href="https://www.justeat.it" target="_blank" rel="noopener">
-      <span class="lc-icon">🍔</span>
-      <div class="lc-body"><div class="lc-title">Just Eat</div><div class="lc-desc">Pizza, sushi, cinese, paninoteche</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">🍔</span>
+      <div class="lb"><div class="lt">Just Eat</div><div class="ld">Pizza, sushi, cinese, paninoteche</div></div>
+      <span class="la">↗</span>
     </a>
-    <a class="lc" href="https://www.glovoapp.com" target="_blank" rel="noopener">
-      <span class="lc-icon">🟡</span>
-      <div class="lc-body"><div class="lc-title">Glovo</div><div class="lc-desc">Ristoranti + supermercato in 30 min</div></div>
-      <span class="lc-arr">↗</span>
-    </a>
-    <div class="sep">Spesa online</div>
-    <a class="lc" href="https://www.esselungaacasa.it" target="_blank" rel="noopener">
-      <span class="lc-icon">🛒</span>
-      <div class="lc-body"><div class="lc-title">Esselunga a casa</div><div class="lc-desc">Spesa online · consegna domani</div></div>
-      <span class="lc-arr">↗</span>
+    <a class="lc" href="https://glovoapp.com/it/it" target="_blank" rel="noopener">
+      <span class="li">🟡</span>
+      <div class="lb"><div class="lt">Glovo</div><div class="ld">Ristoranti + spesa rapida</div></div>
+      <span class="la">↗</span>
     </a>
   </div>
 </div>
 
-<!-- MAP -->
+<!-- ════════ MAP ════════ -->
 <div id="page-map" class="page">
   <div class="inner">
     <div class="ph">
@@ -377,127 +568,142 @@ body::after {
       <h1>Qui<br/>intorno</h1>
     </div>
     <div class="map-wrap">
-      <iframe id="map-iframe" loading="lazy" title="Zona"></iframe>
+      <iframe id="map-iframe" loading="lazy" title="Mappa zona"></iframe>
     </div>
     <a class="lc" id="lc-gmaps" href="#" target="_blank" rel="noopener">
-      <span class="lc-icon">📍</span>
-      <div class="lc-body"><div class="lc-title">Apri su Google Maps</div><div class="lc-desc">Naviga da qui · indirizzo esatto</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">📍</span>
+      <div class="lb"><div class="lt">Apri su Google Maps</div><div class="ld">Naviga da qui</div></div>
+      <span class="la">↗</span>
     </a>
     <div class="sep">A piedi</div>
     <a class="lc" id="lc-super" href="#" target="_blank" rel="noopener">
-      <span class="lc-icon">🛒</span>
-      <div class="lc-body"><div class="lc-title">Supermercato</div><div class="lc-desc">Il più vicino su Maps</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">🛒</span>
+      <div class="lb"><div class="lt">Supermercato</div><div class="ld">Il più vicino su Maps</div></div>
+      <span class="la">↗</span>
     </a>
     <a class="lc" href="https://www.google.com/maps/search/farmacia" target="_blank" rel="noopener">
-      <span class="lc-icon">💊</span>
-      <div class="lc-body"><div class="lc-title">Farmacia</div><div class="lc-desc">Servizio notturno disponibile</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">💊</span>
+      <div class="lb"><div class="lt">Farmacia</div><div class="ld">Servizio notturno disponibile</div></div>
+      <span class="la">↗</span>
     </a>
     <a class="lc" href="https://www.google.com/maps/search/bar" target="_blank" rel="noopener">
-      <span class="lc-icon">☕</span>
-      <div class="lc-body"><div class="lc-title">Bar colazione</div><div class="lc-desc">Apre alle 7:00</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">☕</span>
+      <div class="lb"><div class="lt">Bar colazione</div><div class="ld">You'll find someone!</div></div>
+      <span class="la">↗</span>
     </a>
     <a class="lc" href="https://www.google.com/maps/search/parcheggio" target="_blank" rel="noopener">
-      <span class="lc-icon">🅿️</span>
-      <div class="lc-body"><div class="lc-title">Parcheggio</div><div class="lc-desc">Strisce blu · controlla ZTL</div></div>
-      <span class="lc-arr">↗</span>
+      <span class="li">🅿️</span>
+      <div class="lb"><div class="lt">Parcheggio</div><div class="ld">Strisce blu · Check ZTL (limited traffic zones)</div></div>
+      <span class="la">↗</span>
+    </a>
+    <a class="lc" href="https://www.taxialessandria.it/" target="_blank" rel="noopener">
+      <span class="li">🚕</span>
+      <div class="lb"><div class="lt">Taxi</div><div class="ld">Prenota un passaggio</div></div>
+      <span class="la">↗</span>
     </a>
   </div>
 </div>
 
-<!-- CONTACTS -->
+<!-- ════════ PHOTOS ════════ -->
+<div id="page-photos" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">📸 ricordi</p>
+      <h1>Album<br/>condiviso</h1>
+      <p>Le foto di tutte le serate. Aggiungi le tue.</p>
+    </div>
+    <a class="lc" id="lc-photos" href="#" target="_blank" rel="noopener">
+      <span class="li">🖼️</span>
+      <div class="lb"><div class="lt">Album Google Foto</div><div class="ld">WIP - A breve verrà setuppato</div></div>
+      <span class="la">↗</span>
+    </a>
+  </div>
+</div>
+
+<!-- ════════ CONTACTS ════════ -->
 <div id="page-contacts" class="page">
   <div class="inner">
     <div class="ph">
       <p class="eyebrow">◉ contatti</p>
       <h1>Numeri<br/>utili</h1>
     </div>
-    <div class="ib" id="contacts-main"></div>
-    <div class="ib" style="margin-top:11px">
+    <div class="blk" id="contacts-main"></div>
+    <div class="blk" style="margin-top:10px">
       <label>Emergenze</label>
-      <div class="c-row"><div><div class="cn">Emergenze</div><div class="cd">112</div></div><a href="tel:112" class="btn btn-g">📞</a></div>
-      <div class="c-row"><div><div class="cn">Pronto Soccorso</div><div class="cd">118</div></div><a href="tel:118" class="btn btn-g">📞</a></div>
-      <div class="c-row"><div><div class="cn">Vigili del Fuoco</div><div class="cd">115</div></div><a href="tel:115" class="btn btn-g">📞</a></div>
+      <div class="crow"><div><div class="cname">Emergenze generali</div><div class="cdetail">112</div></div><a href="tel:112" class="btn btn-g">📞</a></div>
+      <div class="crow"><div><div class="cname">Pronto Soccorso</div><div class="cdetail">118</div></div><a href="tel:118" class="btn btn-g">📞</a></div>
+      <div class="crow"><div><div class="cname">Vigili del Fuoco</div><div class="cdetail">115</div></div><a href="tel:115" class="btn btn-g">📞</a></div>
     </div>
   </div>
 </div>
 
-<!-- PHOTOS -->
-<div id="page-photos" class="page">
-  <div class="inner">
-    <div class="ph">
-      <p class="eyebrow">📸 ricordi</p>
-      <h1>Album<br/>condiviso</h1>
-      <p>Le foto di tutte le serate in un posto. Aggiungi le tue.</p>
-    </div>
-    <a class="lc" id="lc-photos" href="#" target="_blank" rel="noopener">
-      <span class="lc-icon">🖼️</span>
-      <div class="lc-body"><div class="lc-title">Album Google Foto</div><div class="lc-desc">Apri · aggiungi le tue foto · nessun account richiesto</div></div>
-      <span class="lc-arr">↗</span>
-    </a>
-  </div>
-</div>
-
-<!-- GUESTBOOK -->
+<!-- ════════ GUESTBOOK ════════ -->
 <div id="page-guestbook" class="page">
   <div class="inner">
     <div class="ph">
       <p class="eyebrow">✍ guestbook</p>
       <h1>Lascia<br/>un segno</h1>
-      <p>Sei stato qui. Dicci com'è andata.</p>
+      <p>Segna il tuo passaggio con un messaggio nel guestbook.</p>
     </div>
-    <div class="ib tally-open">
-      <span style="font-size:2rem">✍</span>
-      <p>Il form si apre in un'altra scheda.<br/>Zero login · risponde in 30 secondi.</p>
-      <a class="btn btn-p" id="tally-btn" href="#" target="_blank" rel="noopener">Lascia un messaggio ↗</a>
-    </div>
-  </div>
-</div>
 
-<!-- THANKS (non in CARDS — raggiungibile solo via link diretto) -->
-<div id="page-thanks" class="page">
-  <div class="thanks-hero">
-    <p class="eyebrow">✦ grazie mille</p>
-    <div class="thanks-big">Sei<br/>un <em>eroe.</em></div>
-    <p class="thanks-sub" id="thanks-sub"></p>
-  </div>
-  <div class="inner" style="padding-top:0">
-    <div class="thanks-divider"></div>
-    <div class="thanks-pills" id="thanks-pills"></div>
-    <p class="thanks-quote" id="thanks-quote"></p>
-    <p class="thanks-quote-attr" id="thanks-quote-attr"></p>
-    <span class="thanks-confetti" id="thanks-confetti"></span>
-    <div class="ib" style="text-align:center;padding:26px 19px;margin-top:10px">
-      <label style="text-align:center">Hai fatto la tua parte</label>
-      <p style="font-family:var(--font-serif);font-size:1.05rem;color:var(--cream);line-height:1.75;margin-top:6px" id="thanks-body"></p>
-    </div>
-    <div class="thanks-sign" id="thanks-sign"></div>
-    <div class="btn-row" style="justify-content:center;margin-top:28px">
-      <button class="btn btn-s" onclick="go('home')">← Torna alla home</button>
-      <a class="btn btn-p" id="tally-thanks-btn" href="#" target="_blank" rel="noopener">✍ Lascia un messaggio</a>
-    </div>
+    <a class="lc" href="https://tally.so/r/kdRRld" target="_blank" rel="noopener">
+      <span class="li">✍</span>
+      <div class="lb">
+        <div class="lt">Guestbook su Tally</div>
+        <div class="ld">Apri il form e lascia il tuo messaggio.</div>
+      </div>
+      <span class="la">↗</span>
+    </a>
   </div>
 </div>
 
 </div><!-- /app -->
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bnav" id="bnav">
+  <div class="bnav-inner">
+    <button class="bnav-item" id="bn-home" onclick="go('')">
+      <span class="ni">🏠</span><span>Home</span>
+    </button>
+    <button class="bnav-item" id="bn-music" onclick="go('music')">
+      <span class="ni">🎵</span><span>Musica</span>
+    </button>
+    <button class="bnav-item" id="bn-board" onclick="go('board')">
+      <span class="ni">🖊️</span><span>Lavagna</span>
+    </button>
+    <button class="bnav-item" id="bn-games" onclick="go('games')">
+      <span class="ni">🎮</span><span>Giochi</span>
+    </button>
+    <button class="bnav-item" id="bn-altro" onclick="openSheet()">
+      <span class="ni">···</span><span>Altro</span>
+    </button>
+  </div>
+</nav>
+
+<!-- BOTTOM SHEET (Altro) -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Altro</div>
+  <div class="sheet-grid" id="sheet-grid"></div>
+</div>
+
 <div id="toast"></div>
 
+<!-- ═══════════════════════════════════════
+     CONFIG + LOGIC
+═══════════════════════════════════════ -->
 <script>
 /* ════════════════════════════════════════════
-   ★  CONFIG
+   ★  CONFIG — solo questo blocco da toccare  ★
 ════════════════════════════════════════════ */
 const C = {
-  house:   "Biscazieri",
-  address: "Via dei Biscazieri, 00",       // ← indirizzo
+  address: "Via Gandolfi, 21 - Alessandria",  // ← il tuo indirizzo
 
   music: {
-    spotifyPlaylist: "https://open.spotify.com/playlist/1WwdJ7KVWoZdESdDYvY88j?si=73ee6fe5b00c45af&pt=9e576b5cc196cd3fde47275c5cfd14b2",
-    spotifyJam:      "",                   // ← URL Jam opzionale
+    spotifyPlaylist: "https://open.spotify.com/playlist/1WwdJ7KVWoZdESdDYvY88j?si=73ee6fe5b00c45af&pt=9e576b5cc196cd3fde47275c5cfd14b2 ",
+    spotifyJam:      "",   // ← URL Jam (opzionale, lascia "" per usare la playlist)
     youtube1:        "https://music.youtube.com/playlist?list=PLTirHryYJPRIcS0j46BfrZuF5pNgo8QrB&jct=55Lcn4L5bza5_Z0peyILuQ",
-    youtube2:        "https://music.youtube.com/playlist?list=PLTirHryYJPRIcS0j46BfrZuF5pNgo8QrB&jct=55Lcn4L5bza5_Z0peyILuQ",
   },
 
   board: {
@@ -505,170 +711,251 @@ const C = {
   },
 
   map: {
-    osmBbox:  "44.9112,44.9122,8.6148,8.6162",  // ← bbox OpenStreetMap
-    gAddress: "Via Gandolfi 21, Alessandria",                // ← per Google Maps
+    osmBbox:  "12.4564,41.9027,12.4664,41.9077",  // ← bbox OpenStreetMap
+    gAddress: "Via+Gandolfi+21+Alessandria",               // ← per link Google Maps
   },
 
   photos: {
-    album: "",   // ← link Google Foto condiviso
+    album: "",  // ← link Google Foto condiviso (lascia "" se non hai ancora)
   },
 
   guestbook: {
-    tallyUrl: "https://tally.so/r/kdRRld",
+    tally: "https://tally.so/r/kdRRld",
   },
-
-  thanks: {
-    sub:       "Hai contribuito al troiaio. La storia ti ricorderà.",
-    pills:     ["🧹 ha pulito","🍕 ha portato cibo","🎵 ha gestito la musica","🍷 ha portato da bere","😂 ha tenuto alto il morale","🚗 ha fatto il conducente","💡 ha risolto problemi tecnici","🛒 ha fatto la spesa"],
-    quote:     "\"Un grande potere comporta una grande pulizia.\"",
-    quoteAttr: "— Zio Ben, probabilmente",
-    confetti:  "🎉 🥂 🏆",
-    body:      "Senza di te questo posto sarebbe un campo minato di bottiglie e rimorsi. Grazie di cuore — sul serio. Sei il tipo di persona che vogliamo sempre tra i piedi.",
-    sign:      "— I Biscazieri 🃏",
-  },
-
-  rules: [
-    { icon:"💡", t:"Luci",          d:"Interruttori alle pareti laterali. Le luci del soggiorno sono dimmerabili: tieni premuto l'interruttore." },
-    { icon:"🌡️", t:"Clima",         d:"Termostato in ingresso. Imposta 20°C per riscaldamento. Non aprire finestre col clima acceso." },
-    { icon:"🔑", t:"Chiavi",        d:"Porta principale: codice ••••. Chiave di riserva nel cassetto dell'ingresso." },
-    { icon:"🗑️", t:"Differenziata", d:"Lun: indifferenziato · Mer: carta · Gio: plastica · Ven: vetro." },
-    { icon:"🧹", t:"Pulizie",       d:"Prodotti sotto il lavello in cucina. Aspirapolvere nell'armadio del corridoio." },
-    { icon:"🚿", t:"Acqua calda",   d:"Boiler: ~15 min per scaldarsi. Accendilo dall'interruttore in bagno prima della doccia." },
-    { icon:"📶", t:"Wi-Fi",         d:"Router nel corridoio. Se cade: spegni 10 secondi e riaccendi." },
-    { icon:"🚨", t:"Emergenze",     d:"Quadro elettrico nel corridoio (pannello a destra). Gas: rubinetto tondo sotto i fornelli." },
-  ],
 
   games: [
-    { n:"Skribbl.io",   i:"🎨", d:"Disegna e indovina · 4–16 giocatori",     u:"https://skribbl.io" },
-    { n:"Gartic Phone", i:"📞", d:"Telefono senza fili con disegni",          u:"https://garticphone.com" },
-    { n:"Kahoot!",      i:"🧠", d:"Quiz live · crea il tuo quiz",             u:"https://kahoot.it" },
-    { n:"Spyfall",      i:"🕵️", d:"Gioco di deduzione · 3–12 persone",        u:"https://www.spyfall.app" },
+    {n:"Skribbl.io",   i:"🎨",d:"Disegna e indovina · 2–16 giocatori",  u:"https://skribbl.io"},
+    {n:"Gartic Phone", i:"📞",d:"Telefono senza fili con disegni",       u:"https://garticphone.com"},
+    {n:"Kahoot!",      i:"🧠",d:"Quiz live · crea il tuo quiz",          u:"https://kahoot.it"},
+    {n:"GeoGuessr",    i:"🌍",d:"Indovina dove sei nel mondo",           u:"https://www.geoguessr.com"},
   ],
 };
 
-/* ── CARDS (thanks non inclusa — pagina nascosta) ── */
+/* ── HOME CARDS (aggiungi / riordina / commenta) ── */
 const CARDS = [
-  { id:"music",     i:"🎵", t:"Musica",     s:"Spotify + YouTube Music",  b:null,  bc:"" },
-  { id:"board",     i:"🖊️", t:"Lavagna",    s:"Excalidraw · zero login",  b:"∞",   bc:"" },
-  { id:"games",     i:"🎮", t:"Giochi",     s:"Multiplayer dal browser",  b:"New", bc:"pur" },
-  { id:"food",      i:"🍕", t:"Cibo",       s:"Delivery in zona",         b:null,  bc:"" },
-  { id:"map",       i:"🗺️", t:"Zona",       s:"Bar, farmacia, taxi",      b:null,  bc:"" },
-  { id:"photos",    i:"📸", t:"Album",      s:"Ricordi condivisi",        b:null,  bc:"" },
-  { id:"contacts",  i:"📞", t:"Contatti",   s:"Numeri utili",             b:null,  bc:"" },
-  { id:"guestbook", i:"✍",  t:"Guestbook", s:"Lascia un messaggio",      b:null,  bc:"" },
+  {id:"music",    i:"🎵",t:"Musica",      s:"Spotify + YouTube Music",  b:null,  bv:false},
+  {id:"board",    i:"🖊️",t:"Lavagna",     s:"Excalidraw · zero login",  b:"∞",   bv:false},
+  {id:"games",    i:"🎮",t:"Giochi",      s:"Multiplayer nel browser",  b:"New", bv:true},
+  {id:"food",     i:"🍕",t:"Cibo",        s:"Delivery in zona",         b:null,  bv:false},
+  {id:"map",      i:"🗺️",t:"Zona",        s:"Bar, farmacia, taxi",      b:null,  bv:false},
+  {id:"photos",   i:"📸",t:"Album",       s:"Ricordi condivisi",        b:null,  bv:false},
+  {id:"guestbook",i:"✍", t:"Guestbook",  s:"Lascia un messaggio",      b:null,  bv:false},
 ];
 
-/* ════ ROUTER ════ */
-function go(s){ location.hash='#/'+s; }
-function route(){
-  const s=(location.hash.replace(/^#\/?/,'')||'home').split('/').pop()||'home';
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const p=document.getElementById('page-'+s);
-  if(!p) return go('home');
-  p.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  const card=CARDS.find(c=>c.id===s);
-  document.getElementById('tb-sec').textContent=card?card.t:(s==='thanks'?'Grazie':s);
-  document.getElementById('tb-div').style.display=s==='home'?'none':'';
-  document.getElementById('back-btn').classList.toggle('on',s!=='home');
+/* ── Bottom nav primary tabs ── */
+const NAV_PRIMARY = ["","music","board","games"];
+
+/* ── Sezioni nel bottom sheet "Altro" ── */
+const SHEET_ITEMS = CARDS.filter(c => !NAV_PRIMARY.includes(c.id));
+
+/* ═════════ ROUTER ═════════ */
+function go(sec){
+  closeSheet();
+  location.hash = sec ? '#' + sec : '#';
 }
-window.addEventListener('hashchange',route);
-window.addEventListener('DOMContentLoaded',()=>{
-  buildHome(); injectConfig(); buildRules(); buildGames(); buildContacts(); buildThanks();
+
+function route(){
+  const hash = location.hash.replace(/^#\/?/,'').trim();
+  const sec  = hash || '';
+
+  /* show/hide pages */
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pid = 'page-' + sec;
+  const pg  = document.getElementById(pid);
+  if(!pg){ location.hash = '#'; return; }
+  pg.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  /* topbar */
+  const card = CARDS.find(c => c.id === sec);
+  const crumb = document.getElementById('bar-crumb');
+  const back  = document.getElementById('back-btn');
+  crumb.textContent = sec ? (card ? card.t : sec) : '';
+  back.classList.toggle('on', sec !== '');
+
+  /* bottom nav highlight */
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  const bn = document.getElementById('bn-' + (sec || 'home'));
+  if(bn) bn.classList.add('active');
+  else   document.getElementById('bn-altro').classList.add('active');
+}
+
+window.addEventListener('hashchange', route);
+window.addEventListener('DOMContentLoaded', () => {
+  buildHome();
+  buildSheetGrid();
+  injectConfig();
+  buildGames();
+  buildStars();
+  loadGB();
   route();
-  makeQR('qr-board', C.board.url, 160);
+  makeQR('qr-board', C.board.url, 158);
 });
 
-/* ════ BUILD HOME ════ */
+/* ═════════ BUILD HOME ═════════ */
 function buildHome(){
-  document.getElementById('hero-addr').textContent=C.address;
-  const g=document.getElementById('home-grid');
-  CARDS.forEach(c=>{
-    const el=document.createElement('div');
-    el.className='card'; el.onclick=()=>go(c.id);
-    el.innerHTML=`${c.b?`<span class="c-badge ${c.bc}">${c.b}</span>`:''}<span class="c-icon">${c.i}</span><div class="c-title">${c.t}</div><div class="c-sub">${c.s}</div>`;
+  document.getElementById('hero-addr').textContent = C.address;
+  const g = document.getElementById('home-grid');
+  CARDS.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    el.onclick = () => go(c.id);
+    el.onkeydown = e => { if(e.key==='Enter'||e.key===' ') go(c.id); };
+    el.innerHTML = `${c.b ? `<span class="c-badge${c.bv?' v':''}">${c.b}</span>` : ''}<span class="c-icon">${c.i}</span><div class="c-title">${c.t}</div><div class="c-sub">${c.s}</div>`;
     g.appendChild(el);
   });
 }
 
-/* ════ INJECT CONFIG ════ */
-function sh(id,url){ const e=document.getElementById(id); if(e&&url) e.href=url; }
+/* ═════════ SHEET GRID ═════════ */
+function buildSheetGrid(){
+  const g = document.getElementById('sheet-grid');
+  SHEET_ITEMS.forEach(c => {
+    const el = document.createElement('button');
+    el.className = 'sheet-item';
+    el.innerHTML = `<span class="si-icon">${c.i}</span><span class="si-label">${c.t}</span>`;
+    el.onclick = () => go(c.id);
+    g.appendChild(el);
+  });
+}
+
+function openSheet(){
+  document.getElementById('sheet-overlay').classList.add('on');
+  document.getElementById('sheet').classList.add('on');
+  document.getElementById('bn-altro').classList.add('active');
+}
+function closeSheet(){
+  document.getElementById('sheet-overlay').classList.remove('on');
+  document.getElementById('sheet').classList.remove('on');
+}
+
+/* ═════════ INJECT CONFIG ═════════ */
+function sh(id,url){ const e=document.getElementById(id); if(e&&url&&url!=='#')e.href=url; }
 function injectConfig(){
   sh('lc-sp-pl',  C.music.spotifyPlaylist);
-  sh('lc-sp-jam', C.music.spotifyJam||C.music.spotifyPlaylist);
+  sh('lc-sp-jam', C.music.spotifyJam || C.music.spotifyPlaylist);
   sh('lc-yt1',    C.music.youtube1);
-  sh('lc-yt2',    C.music.youtube2);
   sh('lc-board',  C.board.url);
-  const mf=document.getElementById('map-iframe');
-  if(mf) mf.src=`https://www.openstreetmap.org/export/embed.html?bbox=${C.map.osmBbox}&layer=mapnik`;
-  sh('lc-gmaps', `https://www.google.com/maps/search/${C.map.gAddress}`);
-  sh('lc-super',  `https://www.google.com/maps/search/supermercato+vicino+${encodeURIComponent(C.address)}`);
-  const fa=document.getElementById('food-addr');
-  if(fa) fa.textContent=C.address;
-  // Photos
-  const lph=document.getElementById('lc-photos');
-  if(C.photos.album && lph){ lph.href=C.photos.album; }
-  else if(lph){ lph.style.opacity='.45'; lph.removeAttribute('href'); }
-  // Guestbook
-  sh('tally-btn',        C.guestbook.tallyUrl);
-  sh('tally-thanks-btn', C.guestbook.tallyUrl);
+
+  const mf = document.getElementById('map-iframe');
+  if(mf) mf.src = `https://www.openstreetmap.org/export/embed.html?bbox=${C.map.osmBbox}&layer=mapnik`;
+  sh('lc-gmaps', `https://www.google.com/maps/search/${encodeURIComponent(C.map.gAddress)}`);
+  sh('lc-super',  `https://www.google.com/maps/search/supermarket`);
+
+  const fa = document.getElementById('food-addr');
+  if(fa) fa.textContent = C.address;
+
+  const lph = document.getElementById('lc-photos');
+  const pp  = document.getElementById('photo-ph');
+  if(C.photos.album){
+    if(lph){ lph.href = C.photos.album; }
+    if(pp) pp.style.display = 'none';
+  } else {
+    if(lph) lph.style.opacity = '.4';
+  }
+
+  if(C.guestbook.tally){
+    const tb = document.getElementById('tally-btn');
+    if(tb){ tb.href = C.guestbook.tally; tb.textContent = 'Apri il Guestbook ↗'; }
+  }
 }
 
-/* ════ RULES ════ */
-function buildRules(){
-  const ul=document.getElementById('rules-list'); if(!ul) return;
-  C.rules.forEach(r=>{ ul.innerHTML+=`<li><span class="r-icon">${r.icon}</span><div class="r-text"><strong>${r.t}</strong>${r.d}</div></li>`; });
-}
-
-/* ════ GAMES ════ */
+/* ═════════ GAMES ═════════ */
 function buildGames(){
-  const g=document.getElementById('games-grid'); if(!g) return;
-  C.games.forEach(gm=>{ g.innerHTML+=`<a class="gc" href="${gm.u}" target="_blank" rel="noopener"><span class="gc-icon">${gm.i}</span><div class="gc-name">${gm.n}</div><div class="gc-sub">${gm.d}</div></a>`; });
+  const g = document.getElementById('games-grid');
+  if(!g) return;
+  C.games.forEach(gm => {
+    g.innerHTML += `<a class="gc" href="${gm.u}" target="_blank" rel="noopener">
+      <span class="gc-icon">${gm.i}</span>
+      <div class="gc-name">${gm.n}</div>
+      <div class="gc-sub">${gm.d}</div>
+    </a>`;
+  });
 }
 
-/* ════ CONTACTS ════ */
-function buildContacts(){
-  const el=document.getElementById('contacts-main'); if(!el) return;
-  el.innerHTML='<label>Casa &amp; tecnici</label>';
-  C.contacts.forEach(c=>{ el.innerHTML+=`<div class="c-row"><div><div class="cn">${c.name}</div><div class="cd">${c.role} · ${c.phone}</div></div><a href="tel:${c.phone.replace(/\s/g,'')}" class="btn btn-g">📞</a></div>`; });
+/* ═════════ QR ═════════ */
+function makeQR(id, text, sz){
+  const el = document.getElementById(id);
+  if(!el || !text || text.includes('INSERISCI')) return;
+  el.innerHTML = '';
+  try{
+    new QRCode(el,{text,width:sz||180,height:sz||180,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+  }catch(e){ el.textContent = 'QR n/d'; }
+}
+function updateBoard(){
+  const url = document.getElementById('board-in').value.trim();
+  if(!url) return toast('Incolla un URL ✦');
+  makeQR('qr-board', url, 158);
+  sh('lc-board', url);
+  toast('QR aggiornato ✓');
 }
 
-/* ════ THANKS ════ */
-function buildThanks(){
-  const t=C.thanks;
-  const set=(id,val)=>{ const e=document.getElementById(id); if(e) e.textContent=val; };
-  set('thanks-sub',       t.sub);
-  set('thanks-quote',     t.quote);
-  set('thanks-quote-attr',t.quoteAttr);
-  set('thanks-confetti',  t.confetti);
-  set('thanks-body',      t.body);
-  set('thanks-sign',      t.sign);
-  const pills=document.getElementById('thanks-pills');
-  if(pills) t.pills.forEach(p=>{ pills.innerHTML+=`<span class="t-pill">${p}</span>`; });
-}
-
-/* ════ QR ════ */
-function makeQR(id,text,sz){
-  const el=document.getElementById(id); if(!el||!text) return;
-  el.innerHTML='';
-  try{ new QRCode(el,{text,width:sz||180,height:sz||180,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M}); }catch(e){}
-}
-
-/* ════ MUSIC ════ */
+/* ═════════ MUSIC SUGGEST ═════════ */
 function copySong(){
-  const v=document.getElementById('song-in').value.trim();
-  if(!v) return toast('Scrivi prima un brano ✦');
+  const v = document.getElementById('song-in').value.trim();
+  if(!v) return toast('Scrivi un brano prima ✦');
   navigator.clipboard.writeText('🎵 '+v)
-    .then(()=>{ document.getElementById('song-in').value=''; toast('Copiato negli appunti ✓'); })
-    .catch(()=>toast('Copia manuale: '+v));
+    .then(() => { document.getElementById('song-in').value=''; toast('Copiato ✓'); })
+    .catch(() => toast('Copia: '+v));
 }
 
-/* ════ TOAST ════ */
+/* ═════════ STARS ═════════ */
+let gbStars = 0;
+function buildStars(){
+  document.querySelectorAll('#stars span').forEach(s => {
+    s.addEventListener('click', () => {
+      gbStars = +s.dataset.v;
+      document.querySelectorAll('#stars span').forEach((st,i) => {
+        st.textContent = i < gbStars ? '★' : '☆';
+        st.classList.toggle('lit', i < gbStars);
+      });
+    });
+  });
+}
+
+/* ═════════ GUESTBOOK ═════════ */
+function loadGB(){
+  const msgs = JSON.parse(localStorage.getItem('biscazieri_gb') || '[]');
+  const el = document.getElementById('gb-msgs');
+  if(!el || !msgs.length) return;
+  el.innerHTML = `<p style="font-family:var(--mono);font-size:.58rem;color:var(--mut2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">Messaggi salvati</p>`;
+  msgs.slice().reverse().forEach(m => {
+    el.innerHTML += `<div class="gb-item">
+      <span class="gb-name">${esc(m.name)}</span>
+      <span class="gb-star">${'★'.repeat(m.s)}${'☆'.repeat(5-m.s)}</span>
+      <div class="gb-text">${esc(m.msg)}</div>
+      <div class="gb-date">${m.date}</div>
+    </div>`;
+  });
+}
+function submitGB(){
+  const name = document.getElementById('gb-name').value.trim();
+  const msg  = document.getElementById('gb-msg').value.trim();
+  if(!name || !msg) return toast('Compila nome e messaggio ✦');
+  const msgs = JSON.parse(localStorage.getItem('biscazieri_gb') || '[]');
+  msgs.push({
+    name, msg, s: gbStars,
+    date: new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})
+  });
+  localStorage.setItem('biscazieri_gb', JSON.stringify(msgs));
+  document.getElementById('gb-name').value = '';
+  document.getElementById('gb-msg').value  = '';
+  gbStars = 0; buildStars(); loadGB();
+  toast('Grazie ' + name + ' ✦');
+}
+function esc(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ═════════ TOAST ═════════ */
 let _tt;
 function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('on');
-  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('on'),2600);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('on'), 2600);
 }
 </script>
 </body>
