@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#070B16"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Ittroiaio"/>
+<title>✦ Ittroiaio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- BLOBS -->
+<div class="blob b1" aria-hidden="true"></div>
+<div class="blob b2" aria-hidden="true"></div>
+<div class="blob b3" aria-hidden="true"></div>
+<div class="blob b4" aria-hidden="true"></div>
+<div class="blob b5" aria-hidden="true"></div>
+
+<!-- TOP BAR -->
+<div class="bar">
+  <button class="bar-back" id="back-btn" onclick="go('')" aria-label="Home">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M12 5L7 10L12 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <span class="bar-logo" onclick="go('')">✦ Ittroiaio</span>
+  <span class="bar-crumb" id="bar-crumb"></span>
+  <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Cambia tema">
+    <span id="theme-icon">☀️</span>
+  </button>
+</div>
+
+<div id="app">
+
+<!-- ████ HOME ████ -->
+<div id="page-" class="page">
+  <div class="hero">
+    <p class="eyebrow">✦ Welcome</p>
+    <h1 class="hero-title">Ittroiaio</h1>
+    <p class="hero-sub" id="hero-addr"></p>
+    <div class="hero-chips">
+      <span class="chip">🏠 casa</span>
+      <span class="chip">🎵 musica</span>
+      <span class="chip">🎮 giochi</span>
+      <span class="chip">🍕 cibo</span>
+    </div>
+  </div>
+  <div class="home-sections" id="home-sections"></div>
+  <div class="footer">organino.org/biscazieri · 2026</div>
+</div>
+
+<!-- ████ MUSIC ████ -->
+<div id="page-music" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">♫ musica</p>
+      <h1>Playlist<br/>condivise</h1>
+      <p>Ascolta, aggiungi, scegli il mood. Aperte a tutti.</p>
+    </div>
+    <div class="sep">Spotify</div>
+    <a class="lc" id="lc-sp-pl" href="#" target="_blank" rel="noopener">
+      <span class="li">🎵</span>
+      <div class="lb"><div class="lt">I TROIAIO</div><div class="ld">Apri su Spotify · Playlist Collaborativa</div></div>
+      <span class="la">↗</span>
+    </a>
+    <div class="sep">YouTube Music</div>
+    <a class="lc" id="lc-yt1" href="#" target="_blank" rel="noopener">
+      <span class="li">▶️</span>
+      <div class="lb"><div class="lt">I TROIAIO</div><div class="ld">YouTube Music · Playlist Collaborativa</div></div>
+      <span class="la">↗</span>
+    </a>
+  </div>
+</div>
+
+<!-- ████ BOARD ████ -->
+<div id="page-board" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">✏️ lavagna</p>
+      <h1>Lavagna<br/>infinita</h1>
+      <p>Disegna, scrivi, lascia idee. Zero account, zero login.</p>
+    </div>
+    <a class="lc" id="lc-board" href="#" target="_blank" rel="noopener">
+      <span class="li">🖊️</span>
+      <div class="lb"><div class="lt">Apri la lavagna</div><div class="ld">Excalidraw · stanza condivisa · disegna quello che vuoi</div></div>
+      <span class="la">↗</span>
+    </a>
+    <div class="qr-wrap">
+      <div class="qr-inner" id="qr-board"></div>
+      <p class="qr-label">Scansiona per aprire sul telefono</p>
+    </div>
+  </div>
+</div>
+
+<!-- ████ GAMES ████ -->
+<div id="page-games" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">🎮 giochi</p>
+      <h1>Giochi<br/>online</h1>
+      <p>Multiplayer dal browser. Nessuna app. Una persona crea la stanza, tutti entrano con il codice.</p>
+    </div>
+    <div class="games-grid" id="games-grid"></div>
+  </div>
+</div>
+
+<!-- ████ FOOD ████ -->
+<div id="page-food" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">🍕 cibo</p>
+      <h1>Ordina<br/>a casa</h1>
+      <p>Delivery in zona. Clicca e ordina direttamente.</p>
+    </div>
+    <div class="food-note">✦ Consegna a: <strong id="food-addr"></strong></div>
+    <a class="lc" href="https://deliveroo.it" target="_blank" rel="noopener">
+      <span class="li">🛵</span>
+      <div class="lb"><div class="lt">Deliveroo</div><div class="ld">Ristoranti · 20–40 min</div></div>
+      <span class="la">↗</span>
+    </a>
+    <a class="lc" href="https://www.justeat.it" target="_blank" rel="noopener">
+      <span class="li">🍔</span>
+      <div class="lb"><div class="lt">Just Eat</div><div class="ld">Pizza, sushi, cinese, paninoteche</div></div>
+      <span class="la">↗</span>
+    </a>
+    <a class="lc" href="https://glovoapp.com/it/it" target="_blank" rel="noopener">
+      <span class="li">🟡</span>
+      <div class="lb"><div class="lt">Glovo</div><div class="ld">Ristoranti + spesa rapida</div></div>
+      <span class="la">↗</span>
+    </a>
+  </div>
+</div>
+
+<!-- ████ MAP ████ -->
+<div id="page-map" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">◌ zona</p>
+      <h1>Qui<br/>intorno</h1>
+    </div>
+    <div class="map-wrap">
+      <iframe id="map-iframe" loading="lazy" title="Mappa zona"></iframe>
+    </div>
+    <a class="lc" id="lc-gmaps" href="#" target="_blank" rel="noopener">
+      <span class="li">📍</span>
+      <div class="lb"><div class="lt">Apri su Google Maps</div><div class="ld">Naviga da qui</div></div>
+      <span class="la">↗</span>
+    </a>
+    <div class="sep">A piedi</div>
+    <a class="lc" href="https://www.google.com/maps/search/supermercato" target="_blank" rel="noopener">
+      <span class="li">🛒</span>
+      <div class="lb"><div class="lt">Supermercato</div><div class="ld">Cerca su Maps i più vicini</div></div>
+      <span class="la">↗</span>
+    </a>
+    <a class="lc" href="https://www.google.com/maps/search/farmacia" target="_blank" rel="noopener">
+      <span class="li">💊</span>
+      <div class="lb"><div class="lt">Farmacia</div><div class="ld">Servizio notturno disponibile</div></div>
+      <span class="la">↗</span>
+    </a>
+    <a class="lc" href="https://www.google.com/maps/search/bar" target="_blank" rel="noopener">
+      <span class="li">☕</span>
+      <div class="lb"><div class="lt">Bar colazione</div><div class="ld">You'll find someone!</div></div>
+      <span class="la">↗</span>
+    </a>
+    <a class="lc" href="https://www.google.com/maps/search/parcheggio" target="_blank" rel="noopener">
+      <span class="li">🅿️</span>
+      <div class="lb"><div class="lt">Parcheggio</div><div class="ld">Strisce blu · Check ZTL</div></div>
+      <span class="la">↗</span>
+    </a>
+    <a class="lc" href="https://www.taxialessandria.it/" target="_blank" rel="noopener">
+      <span class="li">🚕</span>
+      <div class="lb"><div class="lt">Taxi Alessandria</div><div class="ld">Prenota un passaggio</div></div>
+      <span class="la">↗</span>
+    </a>
+  </div>
+</div>
+
+<!-- ████ PHOTOS ████ -->
+<div id="page-photos" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">📸 ricordi</p>
+      <h1>Drive<br/>condiviso</h1>
+      <p>Di tutti i file de Ittroiaio</p>
+    </div>
+    <a class="lc" id="lc-photos" href="#" target="_blank" rel="noopener">
+      <span class="li">🖼️</span>
+      <div class="lb"><div class="lt">Drive</div><div class="ld">WIP — A breve verrà setuppato</div></div>
+      <span class="la">↗</span>
+    </a>
+  </div>
+</div>
+
+<!-- ████ CONTACTS ████ -->
+<div id="page-contacts" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">◉ contatti</p>
+      <h1>Numeri<br/>utili</h1>
+    </div>
+    <div class="blk" id="contacts-main"></div>
+    <div class="blk" style="margin-top:10px">
+      <label>Emergenze</label>
+      <div class="crow"><div><div class="cname">Emergenze generali</div><div class="cdetail">112</div></div><a href="tel:112" class="btn btn-g">📞</a></div>
+      <div class="crow"><div><div class="cname">Pronto Soccorso</div><div class="cdetail">118</div></div><a href="tel:118" class="btn btn-g">📞</a></div>
+      <div class="crow"><div><div class="cname">Vigili del Fuoco</div><div class="cdetail">115</div></div><a href="tel:115" class="btn btn-g">📞</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ████ GUESTBOOK ████ -->
+<div id="page-guestbook" class="page">
+  <div class="inner">
+    <div class="ph">
+      <p class="eyebrow">✍ guestbook</p>
+      <h1>Lascia<br/>un segno</h1>
+      <p>Segna il tuo passaggio con un messaggio nel guestbook.</p>
+    </div>
+    <a class="lc" href="https://tally.so/r/kdRRld" target="_blank" rel="noopener">
+      <span class="li">✍</span>
+      <div class="lb">
+        <div class="lt">Guestbook su Tally</div>
+        <div class="ld">Apri il form e lascia il tuo messaggio.</div>
+      </div>
+      <span class="la">↗</span>
+    </a>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- BOTTOM NAV -->
+<nav class="bnav" id="bnav">
+  <div class="bnav-inner">
+    <button class="bnav-item" id="bn-home"     onclick="go('')">      <span class="ni">🏠</span><span>Home</span>    </button>
+    <button class="bnav-item" id="bn-music"    onclick="go('music')"> <span class="ni">🎵</span><span>Musica</span>   </button>
+    <button class="bnav-item" id="bn-games"    onclick="go('games')"> <span class="ni">🎮</span><span>Giochi</span>   </button>
+    <button class="bnav-item" id="bn-map"      onclick="go('map')">   <span class="ni">🗺️</span><span>Zona</span>     </button>
+    <button class="bnav-item" id="bn-altro"    onclick="openSheet()"> <span class="ni">⋯</span><span>Altro</span>    </button>
+  </div>
+</nav>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Altro</div>
+  <div class="sheet-grid" id="sheet-grid"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
