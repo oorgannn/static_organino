@@ -1,0 +1,114 @@
+media:
+  input: assets/blog
+  output: /assets/blog
+  rename: safe
+  categories: [image]
+
+content:
+  - name: posts
+    label: Blog posts
+    type: collection
+    path: _posts
+    filename:
+      template: "{year}-{month}-{day}-{title}.md"
+      field: false
+    view:
+      fields: [title, date, language]
+      primary: title
+      sort: [date, title]
+      search: [title, body]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: date
+        label: Publication date
+        type: date
+        options:
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm:ssxxx"
+      - name: language
+        label: Language
+        type: select
+        options:
+          values:
+            - name: en
+              label: English
+            - name: it
+              label: Italiano
+      - name: accent
+        label: Accent colour
+        type: string
+        default: "#7ec6b1"
+        required: false
+      - name: font
+        label: Reading font
+        type: select
+        options:
+          values:
+            - name: serif
+              label: Serif
+            - name: sans
+              label: Sans serif
+            - name: mono
+              label: Monospace
+        default: serif
+      - name: width
+        label: Text width
+        type: select
+        options:
+          values:
+            - name: narrow
+              label: Narrow
+            - name: normal
+              label: Normal
+            - name: wide
+              label: Wide
+        default: normal
+      - name: align
+        label: Text alignment
+        type: select
+        options:
+          values:
+            - name: left
+              label: Left
+            - name: center
+              label: Centre
+        default: left
+      - name: description
+        label: Short description
+        type: text
+        required: false
+      - name: image
+        label: Cover image
+        type: image
+        required: false
+      - name: image_alt
+        label: Cover image description
+        type: string
+        required: false
+      - name: image_caption
+        label: Cover image caption
+        type: string
+        required: false
+      - name: body
+        label: Text
+        type: rich-text
+
+  - name: about
+    label: About
+    type: file
+    path: blog/about/index.md
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Introduction
+        type: text
+      - name: body
+        label: Text
+        type: rich-text
