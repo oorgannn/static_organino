@@ -29,6 +29,32 @@
     --mobile-header-height: 0px;
 }
 
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root) {
+    animation: page-out 160ms ease-in both;
+}
+
+::view-transition-new(root) {
+    animation: page-in 300ms ease-out both;
+}
+
+@keyframes page-out {
+    to {
+        opacity: 0.82;
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes page-in {
+    from {
+        opacity: 0.82;
+        transform: translateY(6px);
+    }
+}
+
 body.dark {
     --panna: #2a2a2a;
     --pesca: #3a3a3a;
@@ -67,6 +93,7 @@ body {
     background-image: linear-gradient(135deg, var(--panna) 0%, var(--pesca) 25%, var(--menta) 50%, var(--lavanda) 75%, var(--cielo) 100%);
     background-size: 400% 400%;
     animation: gradientShift 20s ease infinite;
+    animation-delay: var(--gradient-delay, 0s);
 }
 
 @keyframes gradientShift {
@@ -94,6 +121,7 @@ body > header {
     border-bottom: 1px solid rgba(var(--color-border-glass), 0.2);
     transition: all 0.3s ease;
     z-index: 100;
+    view-transition-name: site-header;
 }
 
 body > header.scrolled {
@@ -713,6 +741,20 @@ footer {
         font-size: 1.3rem;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none;
+        background-position: 50% 50%;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root),
+    ::view-transition-group(site-header) {
+        animation-duration: 1ms !important;
+    }
+}
+
 #my-picks h2 {
     font-size: 2.5rem;
     font-weight: 700;

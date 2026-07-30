@@ -5,6 +5,7 @@ description: things I try to write in English
 section: english
 language: en
 ---
+{% assign language_posts = site.posts | where: "language", "en" %}
 <section class="language-intro language-intro--english">
     <a class="post-back" href="/blog/">← all thoughts</a>
     <p class="blog-kicker">language / english</p>
@@ -15,8 +16,7 @@ language: en
 <section class="blog-archive" aria-labelledby="english-posts">
     <div class="archive-heading">
         <h2 id="english-posts">English</h2>
-        <span>{{ site.categories.English | size }} pieces</span>
+        <span>{{ language_posts | size }} pieces</span>
     </div>
-    {% include post-list.html posts=site.categories.English %}
+    {% include post-list.html posts=language_posts %}
 </section>
-

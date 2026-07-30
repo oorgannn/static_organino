@@ -4,13 +4,15 @@ title: thoughts
 description: poems, notes and small pieces in Italian and English
 section: all
 ---
+{% assign italian_posts = site.posts | where: "language", "it" %}
+{% assign english_posts = site.posts | where: "language", "en" %}
 <section class="blog-intro">
     <p class="blog-kicker">a small digital space</p>
     <h1>thoughts<span aria-hidden="true">,</span></h1>
     <p>things i write when they ask to exist somewhere outside my head.</p>
     <div class="language-switch" aria-label="Choose a language">
-        <a href="/blog/italiano/">Italiano <span>{{ site.categories.Italiano | size }}</span></a>
-        <a href="/blog/english/">English <span>{{ site.categories.English | size }}</span></a>
+        <a href="/blog/italiano/">Italiano <span>{{ italian_posts | size }}</span></a>
+        <a href="/blog/english/">English <span>{{ english_posts | size }}</span></a>
     </div>
 </section>
 
@@ -21,4 +23,3 @@ section: all
     </div>
     {% include post-list.html posts=site.posts %}
 </section>
-

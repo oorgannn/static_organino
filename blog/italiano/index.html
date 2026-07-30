@@ -5,6 +5,7 @@ description: cose che provo a scrivere in italiano
 section: italiano
 language: it
 ---
+{% assign language_posts = site.posts | where: "language", "it" %}
 <section class="language-intro language-intro--italiano">
     <a class="post-back" href="/blog/">← tutti i pensieri</a>
     <p class="blog-kicker">lingua / italiano</p>
@@ -15,8 +16,7 @@ language: it
 <section class="blog-archive" aria-labelledby="italian-posts">
     <div class="archive-heading">
         <h2 id="italian-posts">Italiano</h2>
-        <span>{{ site.categories.Italiano | size }} scritti</span>
+        <span>{{ language_posts | size }} scritti</span>
     </div>
-    {% include post-list.html posts=site.categories.Italiano %}
+    {% include post-list.html posts=language_posts %}
 </section>
-
