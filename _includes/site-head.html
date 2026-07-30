@@ -1,0 +1,8 @@
+<script>
+    (() => {
+        const gradientDuration = 20000;
+        const elapsedSeconds = (Date.now() % gradientDuration) / 1000;
+        document.documentElement.style.setProperty("--gradient-delay", `-${elapsedSeconds}s`);
+    })();
+</script>
+<script defer src="/assets/site.js"></script>

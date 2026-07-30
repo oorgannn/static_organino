@@ -24,7 +24,8 @@
     --dark-hover-glow: rgba(142, 45, 226, 0.3);
     --sidebar-width: 250px;
     --site-header-height: 78px;
-    --header-height: 0px;
+    --header-height: var(--site-header-height);
+    --page-header-height: 0px;
     --footer-height: 0px;
     --mobile-header-height: 0px;
 }
@@ -117,7 +118,7 @@ body > header {
     -webkit-backdrop-filter: blur(20px);
     background: rgba(var(--color-bg-glass), 0.3);
     border-bottom: 1px solid rgba(var(--color-border-glass), 0.2);
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
     z-index: 100;
     view-transition-name: site-header;
 }
@@ -192,7 +193,7 @@ body > header nav a[aria-current="page"]::after {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 2rem 5%;
+    padding: calc(var(--site-header-height) + 2rem) 5% 2rem;
 }
 
 .hero h1 {
@@ -200,7 +201,6 @@ body > header nav a[aria-current="page"]::after {
     font-weight: 800;
     margin-bottom: 2rem;
     color: var(--color-text-accent);
-    animation: fadeInUp 1s ease;
     line-height: 1;
 }
 
@@ -210,7 +210,6 @@ body > header nav a[aria-current="page"]::after {
     max-width: 700px;
     margin-bottom: 3rem;
     line-height: 1.6;
-    animation: fadeInUp 1s ease 0.2s backwards;
 }
 
 .enter-button {
@@ -226,7 +225,6 @@ body > header nav a[aria-current="page"]::after {
     cursor: pointer;
     font-weight: 500;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: fadeInUp 1s ease 0.4s backwards;
     text-decoration: none;
     display: inline-block;
     overflow: hidden;
@@ -258,37 +256,30 @@ body > header nav a[aria-current="page"]::after {
     height: 300px;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .explore-section {
     min-height: 100vh;
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem 5%;
+    padding: calc(var(--site-header-height) + 2rem) 5% 2rem;
     opacity: 0;
 }
 
 .explore-section.active {
     display: flex;
-    animation: fadeInBlur 1s ease forwards;
+    opacity: 1;
 }
 
-@keyframes fadeInBlur {
+.explore-section.revealed {
+    animation: section-reveal 480ms ease-out both;
+}
+
+@keyframes section-reveal {
     from {
         opacity: 0;
-        filter: blur(12px);
-        transform: translateY(12px);
+        filter: blur(6px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -302,14 +293,12 @@ body > header nav a[aria-current="page"]::after {
     font-weight: 800;
     color: var(--color-text-accent);
     margin-bottom: 1rem;
-    animation: fadeInBlur 1s ease 0.2s backwards;
 }
 
 .explore-subtitle {
     font-size: 1.25rem;
     color: var(--color-text-secondary);
     margin-bottom: 3rem;
-    animation: fadeInBlur 1s ease 0.3s backwards;
 }
 
 .explore-buttons {
@@ -333,22 +322,6 @@ body > header nav a[aria-current="page"]::after {
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
-}
-
-.explore-button:nth-child(1) {
-    animation: fadeInBlur 1s ease 0.4s backwards;
-}
-
-.explore-button:nth-child(2) {
-    animation: fadeInBlur 1s ease 0.5s backwards;
-}
-
-.explore-button:nth-child(3) {
-    animation: fadeInBlur 1s ease 0.6s backwards;
-}
-
-.explore-button:nth-child(4) {
-    animation: fadeInBlur 1s ease 0.7s backwards;
 }
 
 .explore-button:hover {
@@ -426,22 +399,6 @@ a.wip-button:hover {
     border-color: rgba(var(--color-border-glass), 0.6);
 }
 
-.explore-card:nth-child(1) {
-    animation: fadeInBlur 1s ease 0.3s backwards;
-}
-
-.explore-card:nth-child(2) {
-    animation: fadeInBlur 1s ease 0.4s backwards;
-}
-
-.explore-card:nth-child(3) {
-    animation: fadeInBlur 1s ease 0.5s backwards;
-}
-
-.explore-card:nth-child(4) {
-    animation: fadeInBlur 1s ease 0.6s backwards;
-}
-
 .explore-icon {
     font-size: 3.5rem;
     margin-bottom: 1.5rem;
@@ -486,6 +443,8 @@ a.wip-button:hover {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    color: inherit;
+    text-decoration: none;
 }
 
 .project-card:hover {
@@ -746,6 +705,15 @@ footer {
         background-position: 50% 50%;
     }
 
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+    }
+
     ::view-transition-old(root),
     ::view-transition-new(root),
     ::view-transition-group(site-header) {
@@ -866,8 +834,8 @@ footer {
 
 .picks-page-header {
     text-align: center;
-    padding: 5rem 5% 3rem;
-    margin-top: var(--header-height);
+    padding: calc(var(--site-header-height) + 2.5rem) 5% 3rem;
+    margin-top: 0;
 }
 
 .picks-page-title {
@@ -1044,9 +1012,9 @@ footer {
 }
 
 .picks-main-content {
-    margin-top: calc(var(--header-height) + var(--page-header-height) + 2rem);
+    margin-top: 2rem;
     padding: 1rem 5% 3rem;
-    min-height: calc(100vh - var(--header-height) - var(--page-header-height));
+    min-height: calc(100vh - var(--site-header-height));
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
@@ -1245,7 +1213,7 @@ footer {
         margin-left: auto;
         margin-right: auto;
         max-width: 100%;
-        margin-top: calc(var(--header-height) + var(--page-header-height) + 1rem);
+        margin-top: 1rem;
         padding: 1rem 5% 1.5rem;
     }
 

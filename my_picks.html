@@ -6,7 +6,7 @@ permalink: /my_picks.html
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    {% include motion-head.html %}
+    {% include site-head.html %}
     <meta name="format-detection" content="telephone=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,18 +23,8 @@ permalink: /my_picks.html
 
 
         body {
-            animation: gradientShift 20s ease infinite;
-
             -webkit-overflow-scrolling: touch;
-
             overscroll-behavior-y: none;
-        }
-
-
-        @supports (backdrop-filter: blur(10px)) {
-            body {
-                will-change: background-position;
-            }
         }
 
 
@@ -47,12 +37,6 @@ permalink: /my_picks.html
             }
 
 
-            @media (prefers-reduced-motion: reduce) {
-                body {
-                    animation: none;
-                    background-position: 0% 50%;
-                }
-            }
         }
 
 
@@ -251,7 +235,6 @@ permalink: /my_picks.html
 
 
         .pick-item {
-            animation: fadeInUp 0.5s ease backwards;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
@@ -656,16 +639,28 @@ permalink: /my_picks.html
 
             width: 44px;
             height: 44px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0;
+            line-height: 1;
             color: #fff;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transform-origin: 50% 50%;
+            transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
             z-index: 10;
         }
 
+        .modal-close::before {
+            content: "×";
+            display: block;
+            font-size: 1.65rem;
+            font-weight: 400;
+            line-height: 1;
+            transform: translateY(-0.04em);
+        }
 
         @supports (backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px)) {
             .modal-close {
@@ -833,7 +828,10 @@ permalink: /my_picks.html
             .modal-close {
                 width: 40px;
                 height: 40px;
-                font-size: 1.3rem;
+            }
+
+            .modal-close::before {
+                font-size: 1.5rem;
             }
         }
 
@@ -1292,7 +1290,7 @@ permalink: /my_picks.html
                 <!-- Generated: 2025-11-26 19:14:59 -->
                 <div class="pick-item" data-category="games" data-title="Wednesdays" data-description="Wednesdays is a narrative game published by ARTE France that addresses child sexual abuse through an uplifting, hopeful story. The game follows Tim, a man who experienced (as many people) sexual abuse as a child, whose repressed memories resurface while playing Orco Park, a theme park simulator from his childhood.">
                     <div class="card project-card">
-                        <img src="assets\games\wednesdays-cover.png" class="card-img-top" alt="Wednesdays Cover" loading="lazy" decoding="async">
+                        <img src="assets/games/wednesdays-cover.png" class="card-img-top" alt="Wednesdays Cover" loading="lazy" decoding="async">
                         <div class="card-overlay">
                             <div class="card-overlay-content">
                                 <div class="card-body">
@@ -1316,9 +1314,9 @@ permalink: /my_picks.html
     </main>
 
     <!-- Book Modal -->
-    <div id="book-modal" class="modal-overlay">
+    <div id="book-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-title">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeBookModal()">&times;</button>
+            <button class="modal-close" onclick="closeBookModal()" aria-label="Close book details">&times;</button>
             <div class="modal-body">
                 <img src="" alt="" class="modal-book-cover" id="modal-cover" loading="lazy" decoding="async">
                 <div class="modal-book-info">
@@ -1354,9 +1352,9 @@ permalink: /my_picks.html
     </div>
 
     <!-- Movie Modal -->
-    <div id="movie-modal" class="modal-overlay">
+    <div id="movie-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-movie-title">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeMovieModal()">&times;</button>
+            <button class="modal-close" onclick="closeMovieModal()" aria-label="Close movie details">&times;</button>
             <div class="modal-body">
                 <img src="" alt="" class="modal-book-cover" id="modal-movie-poster" loading="lazy" decoding="async">
                 <div class="modal-book-info">
@@ -1392,9 +1390,9 @@ permalink: /my_picks.html
     </div>
 
     <!-- Series Modal -->
-    <div id="series-modal" class="modal-overlay">
+    <div id="series-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-series-title">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeSeriesModal()">&times;</button>
+            <button class="modal-close" onclick="closeSeriesModal()" aria-label="Close series details">&times;</button>
             <div class="modal-body">
                 <img src="" alt="" class="modal-book-cover" id="modal-series-poster" loading="lazy" decoding="async">
                 <div class="modal-book-info">
@@ -1430,9 +1428,9 @@ permalink: /my_picks.html
     </div>
 
     <!-- Game Modal -->
-    <div id="game-modal" class="modal-overlay">
+    <div id="game-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-game-title">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeGameModal()">&times;</button>
+            <button class="modal-close" onclick="closeGameModal()" aria-label="Close game details">&times;</button>
             <div class="modal-body">
                 <img src="" alt="" class="modal-book-cover" id="modal-game-cover" loading="lazy" decoding="async">
                 <div class="modal-book-info">
@@ -1630,36 +1628,9 @@ permalink: /my_picks.html
         });
 
 
-        const header = document.getElementById('header');
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-
-        function adjustContentPadding() {
-            const header = document.getElementById('header');
-            const pageHeader = document.querySelector('.picks-page-header');
-            if (window.getComputedStyle(header).position === 'fixed') {
-                const headerHeight = header.offsetHeight;
-                if (pageHeader) {
-                    pageHeader.style.paddingTop = `${headerHeight}px`;
-                }
-            }
-        }
-
-
         window.addEventListener('DOMContentLoaded', () => {
-            adjustContentPadding();
             performSearch();
         });
-
-        window.addEventListener('resize', adjustContentPadding);
-        window.addEventListener('scroll', adjustContentPadding);
 
 
 
@@ -1824,6 +1795,36 @@ permalink: /my_picks.html
         }
 
 
+        let lastModalTrigger = null;
+
+        function setModalState(modal, isOpen) {
+            if (isOpen) {
+                lastModalTrigger = document.activeElement;
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('modal-open');
+                setTimeout(() => {
+                    if (modal.classList.contains('active')) {
+                        modal.querySelector('.modal-close')?.focus();
+                    }
+                }, 320);
+                return;
+            }
+
+            if (!modal.classList.contains('active')) {
+                return;
+            }
+
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+
+            if (lastModalTrigger instanceof HTMLElement) {
+                lastModalTrigger.focus();
+            }
+            lastModalTrigger = null;
+        }
+
         function openBookModal(bookKey) {
             const book = booksData[bookKey];
             if (!book) {
@@ -1857,15 +1858,13 @@ permalink: /my_picks.html
 
 
             const modal = document.getElementById('book-modal');
-            modal.classList.add('active');
-            document.body.classList.add('modal-open');
+            setModalState(modal, true);
         }
 
 
         function closeBookModal() {
             const modal = document.getElementById('book-modal');
-            modal.classList.remove('active');
-            document.body.classList.remove('modal-open');
+            setModalState(modal, false);
         }
 
 
@@ -1885,32 +1884,6 @@ permalink: /my_picks.html
             }
         });
 
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const bookCards = document.querySelectorAll('#books .pick-item');
-
-            bookCards.forEach(card => {
-                const title = card.dataset.title;
-                const bookKey = createBookKey(title.split(' - ')[0]);
-
-
-                card.addEventListener('click', function(e) {
-
-                    if (!e.target.closest('.see-more-button')) {
-                        openBookModal(bookKey);
-                    }
-                });
-
-
-                const seeMoreBtn = card.querySelector('.see-more-button');
-                if (seeMoreBtn) {
-                    seeMoreBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        openBookModal(bookKey);
-                    });
-                }
-            });
-        });
 
 
 
@@ -2037,15 +2010,13 @@ permalink: /my_picks.html
 
 
             const modal = document.getElementById('movie-modal');
-            modal.classList.add('active');
-            document.body.classList.add('modal-open');
+            setModalState(modal, true);
         }
 
 
         function closeMovieModal() {
             const modal = document.getElementById('movie-modal');
-            modal.classList.remove('active');
-            document.body.classList.remove('modal-open');
+            setModalState(modal, false);
         }
 
 
@@ -2192,15 +2163,13 @@ permalink: /my_picks.html
 
 
             const modal = document.getElementById('series-modal');
-            modal.classList.add('active');
-            document.body.classList.add('modal-open');
+            setModalState(modal, true);
         }
 
 
         function closeSeriesModal() {
             const modal = document.getElementById('series-modal');
-            modal.classList.remove('active');
-            document.body.classList.remove('modal-open');
+            setModalState(modal, false);
         }
 
 
@@ -2358,15 +2327,13 @@ permalink: /my_picks.html
 
 
             const modal = document.getElementById('game-modal');
-            modal.classList.add('active');
-            document.body.classList.add('modal-open');
+            setModalState(modal, true);
         }
 
 
         function closeGameModal() {
             const modal = document.getElementById('game-modal');
-            modal.classList.remove('active');
-            document.body.classList.remove('modal-open');
+            setModalState(modal, false);
         }
 
 
@@ -2381,81 +2348,29 @@ permalink: /my_picks.html
 
 
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const movieCards = document.querySelectorAll('#movies .pick-item');
+        function bindPickCards(sectionSelector, getKey, openModal) {
+            document.querySelectorAll(`${sectionSelector} .pick-item`).forEach(card => {
+                const itemKey = getKey(card.dataset.title);
+                const seeMoreButton = card.querySelector('.see-more-button');
 
-            movieCards.forEach(card => {
-                const title = card.dataset.title;
-                const movieKey = createMovieKey(title);
-
-
-                card.addEventListener('click', function(e) {
-                    if (!e.target.closest('.see-more-button')) {
-                        openMovieModal(movieKey);
+                card.addEventListener('click', event => {
+                    if (!event.target.closest('.see-more-button')) {
+                        openModal(itemKey);
                     }
                 });
 
-
-                const seeMoreBtn = card.querySelector('.see-more-button');
-                if (seeMoreBtn) {
-                    seeMoreBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        openMovieModal(movieKey);
-                    });
-                }
-            });
-        });
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const seriesCards = document.querySelectorAll('#series .pick-item');
-
-            seriesCards.forEach(card => {
-                const title = card.dataset.title;
-                const seriesKey = createSeriesKey(title);
-
-
-                card.addEventListener('click', function(e) {
-                    if (!e.target.closest('.see-more-button')) {
-                        openSeriesModal(seriesKey);
-                    }
+                seeMoreButton?.addEventListener('click', event => {
+                    event.stopPropagation();
+                    openModal(itemKey);
                 });
-
-
-                const seeMoreBtn = card.querySelector('.see-more-button');
-                if (seeMoreBtn) {
-                    seeMoreBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        openSeriesModal(seriesKey);
-                    });
-                }
             });
-        });
+        }
 
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const gameCards = document.querySelectorAll('#games .pick-item');
-
-            gameCards.forEach(card => {
-                const title = card.dataset.title;
-                const gameKey = createGameKey(title);
-
-
-                card.addEventListener('click', function(e) {
-                    if (!e.target.closest('.see-more-button')) {
-                        openGameModal(gameKey);
-                    }
-                });
-
-
-                const seeMoreBtn = card.querySelector('.see-more-button');
-                if (seeMoreBtn) {
-                    seeMoreBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        openGameModal(gameKey);
-                    });
-                }
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            bindPickCards('#books', title => createBookKey(title.split(' - ')[0]), openBookModal);
+            bindPickCards('#movies', createMovieKey, openMovieModal);
+            bindPickCards('#series', createSeriesKey, openSeriesModal);
+            bindPickCards('#games', createGameKey, openGameModal);
         });
     </script>
 </body>
