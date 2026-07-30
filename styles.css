@@ -77,7 +77,7 @@ body {
     }
 }
 
-header {
+body > header {
     position: fixed;
     top: 0;
     left: 0;
@@ -94,7 +94,7 @@ header {
     z-index: 100;
 }
 
-header.scrolled {
+body > header.scrolled {
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     background: rgba(var(--color-bg-glass), 0.5);
@@ -108,12 +108,12 @@ header.scrolled {
     letter-spacing: -0.5px;
 }
 
-nav {
+body > header nav {
     display: flex;
     gap: 2.5rem;
 }
 
-nav a {
+body > header nav a {
     color: var(--color-text-muted);
     text-decoration: none;
     font-weight: 500;
@@ -122,7 +122,7 @@ nav a {
     position: relative;
 }
 
-nav a::after {
+body > header nav a::after {
     content: '';
     position: absolute;
     bottom: -4px;
@@ -133,11 +133,11 @@ nav a::after {
     transition: width 0.3s ease;
 }
 
-nav a:hover {
+body > header nav a:hover {
     color: var(--color-text-accent);
 }
 
-nav a:hover::after {
+body > header nav a:hover::after {
     width: 100%;
 }
 

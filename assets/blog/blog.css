@@ -268,13 +268,18 @@
 }
 
 .post {
+    --post-accent: #7ec6b1;
+    --post-reading-width: 680px;
     width: min(100%, 940px);
     margin: 0 auto;
+    position: relative;
 }
 
 .post-header {
-    width: min(100%, var(--reading-width));
+    width: min(100%, var(--post-reading-width));
     margin: 0 auto 4.5rem;
+    padding-left: clamp(1rem, 2.5vw, 1.75rem);
+    border-left: 4px solid var(--post-accent);
 }
 
 .post-meta {
@@ -287,14 +292,15 @@
 
 .post-header h1 {
     margin: 0;
-    font-size: clamp(3.2rem, 8vw, 7rem);
-    line-height: 0.92;
+    font-size: clamp(2.75rem, 6vw, 5.4rem);
+    line-height: 0.96;
+    letter-spacing: -0.055em;
 }
 
 .post-description {
     margin-top: 1.75rem;
     color: var(--blog-muted);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: 1.6;
 }
 
@@ -310,22 +316,25 @@
     border-radius: 28px;
 }
 
+.post-cover figcaption {
+    width: min(100%, var(--post-reading-width));
+    margin: 0.8rem auto 0;
+    color: var(--blog-muted);
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
 .post-body {
-    width: min(100%, var(--reading-width));
+    width: min(100%, var(--post-reading-width));
     margin: 0 auto;
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
-    line-height: 1.82;
+    font-size: clamp(1.16rem, 1.7vw, 1.3rem);
+    line-height: 1.78;
     color: #26352f;
 }
 
 .post-body p {
     margin: 0 0 1.65em;
-}
-
-.post-body--poetry {
-    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
-    line-height: 1.75;
 }
 
 .post-body a,
@@ -337,7 +346,7 @@
 }
 
 .post-pagination {
-    width: min(100%, var(--reading-width));
+    width: min(100%, var(--post-reading-width));
     margin: 6rem auto 0;
     padding-top: 2rem;
     border-top: 1px solid var(--blog-line);
@@ -519,6 +528,20 @@
         font-size: 2rem;
     }
 
+    .post-header {
+        margin-bottom: 3.25rem;
+        padding-left: 1rem;
+    }
+
+    .post-header h1 {
+        font-size: clamp(2.6rem, 15vw, 4.4rem);
+    }
+
+    .post-body {
+        font-size: 1.125rem;
+        line-height: 1.72;
+    }
+
     .post-pagination {
         grid-template-columns: 1fr;
     }
@@ -548,4 +571,3 @@
         transition: none;
     }
 }
-

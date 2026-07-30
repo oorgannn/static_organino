@@ -1,17 +1,17 @@
 ---
 layout: blog
 ---
-<article class="post" lang="{{ page.language | default: 'en' }}">
+<article
+    class="post"
+    lang="{{ page.language | default: 'en' }}"
+    {% if page.accent %}style="--post-accent: {{ page.accent | escape }};"{% endif %}
+>
     <header class="post-header">
         <a class="post-back" href="/blog/">← all thoughts</a>
         <div class="post-meta">
             <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%d.%m.%Y" }}</time>
             <span aria-hidden="true">·</span>
             <span>{% if page.language == "it" %}Italiano{% else %}English{% endif %}</span>
-            {% if page.kind %}
-            <span aria-hidden="true">·</span>
-            <span>{{ page.kind }}</span>
-            {% endif %}
         </div>
         <h1>{{ page.title }}</h1>
         {% if page.description %}
@@ -21,11 +21,14 @@ layout: blog
 
     {% if page.image %}
     <figure class="post-cover">
-        <img src="{{ page.image }}" alt="" loading="eager">
+        <img src="{{ page.image }}" alt="{{ page.image_alt | default: '' | escape }}" loading="eager">
+        {% if page.image_caption %}
+        <figcaption>{{ page.image_caption }}</figcaption>
+        {% endif %}
     </figure>
     {% endif %}
 
-    <div class="post-body{% if page.kind == 'poetry' %} post-body--poetry{% endif %}">
+    <div class="post-body">
         {{ content }}
     </div>
 
@@ -46,4 +49,3 @@ layout: blog
         {% endif %}
     </nav>
 </article>
-
