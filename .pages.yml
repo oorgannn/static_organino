@@ -44,40 +44,6 @@ content:
         type: string
         default: "#7ec6b1"
         required: false
-      - name: font
-        label: Reading font
-        type: select
-        options:
-          values:
-            - name: serif
-              label: Serif
-            - name: sans
-              label: Sans serif
-            - name: mono
-              label: Monospace
-        default: serif
-      - name: width
-        label: Text width
-        type: select
-        options:
-          values:
-            - name: narrow
-              label: Narrow
-            - name: normal
-              label: Normal
-            - name: wide
-              label: Wide
-        default: normal
-      - name: align
-        label: Text alignment
-        type: select
-        options:
-          values:
-            - name: left
-              label: Left
-            - name: center
-              label: Centre
-        default: left
       - name: description
         label: Short description
         type: text
