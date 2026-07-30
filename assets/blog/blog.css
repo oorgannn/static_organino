@@ -36,7 +36,6 @@
     top: calc(var(--site-header-height) + 1.5rem);
     align-self: start;
     padding: 2.75rem 0;
-    view-transition-name: blog-sidebar;
 }
 
 .blog-sidebar-label {

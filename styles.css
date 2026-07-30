@@ -34,24 +34,22 @@
 }
 
 ::view-transition-old(root) {
-    animation: page-out 160ms ease-in both;
+    animation: page-out 100ms ease-in both;
 }
 
 ::view-transition-new(root) {
-    animation: page-in 300ms ease-out both;
+    animation: page-in 180ms ease-out both;
 }
 
 @keyframes page-out {
     to {
-        opacity: 0.82;
-        transform: translateY(-4px);
+        opacity: 0.94;
     }
 }
 
 @keyframes page-in {
     from {
-        opacity: 0.82;
-        transform: translateY(6px);
+        opacity: 0.94;
     }
 }
 
