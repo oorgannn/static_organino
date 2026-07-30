@@ -1,0 +1,22 @@
+---
+layout: blog
+title: English
+description: things I try to write in English
+section: english
+language: en
+---
+<section class="language-intro language-intro--english">
+    <a class="post-back" href="/blog/">← all thoughts</a>
+    <p class="blog-kicker">language / english</p>
+    <h1>things i try to write<br>in english.</h1>
+    <p>not always fluent, still honest.</p>
+</section>
+
+<section class="blog-archive" aria-labelledby="english-posts">
+    <div class="archive-heading">
+        <h2 id="english-posts">English</h2>
+        <span>{{ site.categories.English | size }} pieces</span>
+    </div>
+    {% include post-list.html posts=site.categories.English %}
+</section>
+

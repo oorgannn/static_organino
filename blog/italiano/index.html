@@ -1,0 +1,22 @@
+---
+layout: blog
+title: Italiano
+description: cose che provo a scrivere in italiano
+section: italiano
+language: it
+---
+<section class="language-intro language-intro--italiano">
+    <a class="post-back" href="/blog/">← tutti i pensieri</a>
+    <p class="blog-kicker">lingua / italiano</p>
+    <h1>cose che provo<br>a scrivere.</h1>
+    <p>un posto piccolo, ma abbastanza grande da contenerle.</p>
+</section>
+
+<section class="blog-archive" aria-labelledby="italian-posts">
+    <div class="archive-heading">
+        <h2 id="italian-posts">Italiano</h2>
+        <span>{{ site.categories.Italiano | size }} scritti</span>
+    </div>
+    {% include post-list.html posts=site.categories.Italiano %}
+</section>
+

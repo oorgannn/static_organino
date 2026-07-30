@@ -1,0 +1,31 @@
+title: organ
+description: thoughts, poems and small pieces in Italian and English
+url: https://organino.org
+timezone: Europe/Rome
+lang: en
+
+permalink: /blog/:year/:month/:day/:title/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+  - scope:
+      path: blog/about
+    values:
+      layout: about
+      section: about
+      language: en
+
+plugins:
+  - jekyll-feed
+
+feed:
+  path: /blog/feed.xml
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

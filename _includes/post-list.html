@@ -1,0 +1,19 @@
+<ol class="post-list">
+{% for post in include.posts %}
+    <li class="post-list-item" lang="{{ post.language | default: 'en' }}">
+        <a href="{{ post.url }}">
+            <div class="post-list-meta">
+                <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%d.%m.%Y" }}</time>
+                <span>{{ post.kind | default: "thought" }}</span>
+                <span>{% if post.language == "it" %}IT{% else %}EN{% endif %}</span>
+            </div>
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.description | default: post.excerpt | strip_html | normalize_whitespace | truncate: 190 }}</p>
+            <span class="post-list-arrow" aria-hidden="true">↗</span>
+        </a>
+    </li>
+{% else %}
+    <li class="post-list-empty">Nothing here yet.</li>
+{% endfor %}
+</ol>
+
