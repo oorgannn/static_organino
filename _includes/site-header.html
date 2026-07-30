@@ -1,0 +1,20 @@
+<header id="header" class="site-header">
+    <a class="logo site-logo" href="/" aria-label="organ home">organ</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="/"{% if include.active == "home" %} aria-current="page"{% endif %}>Home</a>
+        <a href="/projects.html"{% if include.active == "projects" %} aria-current="page"{% endif %}>Projects</a>
+        <a href="/my_picks.html"{% if include.active == "picks" %} aria-current="page"{% endif %}>My Picks</a>
+        <a href="/blog/"{% if include.active == "blog" %} aria-current="page"{% endif %}>Blog</a>
+    </nav>
+
+    <details class="site-menu">
+        <summary>Menu</summary>
+        <nav aria-label="Main navigation">
+            <a href="/"{% if include.active == "home" %} aria-current="page"{% endif %}>Home</a>
+            <a href="/projects.html"{% if include.active == "projects" %} aria-current="page"{% endif %}>Projects</a>
+            <a href="/my_picks.html"{% if include.active == "picks" %} aria-current="page"{% endif %}>My Picks</a>
+            <a href="/blog/"{% if include.active == "blog" %} aria-current="page"{% endif %}>Blog</a>
+        </nav>
+    </details>
+</header>

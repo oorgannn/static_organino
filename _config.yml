@@ -12,6 +12,7 @@ defaults:
       type: posts
     values:
       layout: post
+      section: all
   - scope:
       path: blog/about
     values:

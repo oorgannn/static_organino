@@ -23,6 +23,7 @@
     --dark-shadow: rgba(0, 0, 0, 0.5);
     --dark-hover-glow: rgba(142, 45, 226, 0.3);
     --sidebar-width: 250px;
+    --site-header-height: 78px;
     --header-height: 0px;
     --footer-height: 0px;
     --mobile-header-height: 0px;
@@ -83,6 +84,7 @@ body > header {
     left: 0;
     right: 0;
     padding: 1.5rem 5%;
+    min-height: var(--site-header-height);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -106,6 +108,10 @@ body > header.scrolled {
     font-weight: 700;
     color: var(--color-text-accent);
     letter-spacing: -0.5px;
+}
+
+.site-logo {
+    text-decoration: none;
 }
 
 body > header nav {
@@ -139,6 +145,18 @@ body > header nav a:hover {
 
 body > header nav a:hover::after {
     width: 100%;
+}
+
+body > header nav a[aria-current="page"] {
+    color: var(--color-text-accent);
+}
+
+body > header nav a[aria-current="page"]::after {
+    width: 100%;
+}
+
+.site-menu {
+    display: none;
 }
 
 .hero {
@@ -607,6 +625,14 @@ footer {
 }
 
 @media (max-width: 768px) {
+    :root {
+        --site-header-height: 64px;
+    }
+
+    body > header {
+        padding: 0.85rem 5%;
+    }
+
     .hero h1 {
         font-size: 4rem;
     }
@@ -615,12 +641,61 @@ footer {
         font-size: 1.1rem;
     }
 
-    nav {
-        gap: 1.5rem;
+    body > header .site-nav {
+        display: none;
     }
 
-    nav a {
+    .site-menu {
+        display: block;
+        position: relative;
+    }
+
+    .site-menu summary {
+        padding: 0.45rem 0.7rem;
+        border: 1px solid rgba(var(--color-border-glass), 0.5);
+        border-radius: 999px;
+        color: var(--color-text-accent);
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+        list-style: none;
+    }
+
+    .site-menu summary::-webkit-details-marker {
+        display: none;
+    }
+
+    body > header .site-menu nav {
+        position: absolute;
+        top: calc(100% + 0.75rem);
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        min-width: 180px;
+        padding: 0.65rem;
+        border: 1px solid rgba(var(--color-border-glass), 0.5);
+        border-radius: 16px;
+        background: rgba(var(--color-bg-glass), 0.96);
+        box-shadow: 0 18px 45px var(--color-shadow);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+    }
+
+    body > header .site-menu nav a {
+        display: block;
+        padding: 0.65rem 0.75rem;
+        border-radius: 10px;
         font-size: 0.95rem;
+    }
+
+    body > header .site-menu nav a::after {
+        display: none;
+    }
+
+    body > header .site-menu nav a:hover,
+    body > header .site-menu nav a[aria-current="page"] {
+        background: rgba(var(--color-border-glass), 0.35);
     }
 
     .footer-content {

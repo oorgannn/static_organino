@@ -35,7 +35,7 @@ layout: blog
     <nav class="post-pagination" aria-label="Other posts">
         {% if page.previous %}
         <a href="{{ page.previous.url }}">
-            <span>older</span>
+            <span>← Previous</span>
             <strong>{{ page.previous.title }}</strong>
         </a>
         {% else %}
@@ -43,7 +43,7 @@ layout: blog
         {% endif %}
         {% if page.next %}
         <a href="{{ page.next.url }}">
-            <span>newer</span>
+            <span>Next →</span>
             <strong>{{ page.next.title }}</strong>
         </a>
         {% endif %}

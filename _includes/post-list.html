@@ -4,7 +4,6 @@
         <a href="{{ post.url }}">
             <div class="post-list-meta">
                 <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%d.%m.%Y" }}</time>
-                <span>{{ post.kind | default: "thought" }}</span>
                 <span>{% if post.language == "it" %}IT{% else %}EN{% endif %}</span>
             </div>
             <h2>{{ post.title }}</h2>
@@ -16,4 +15,3 @@
     <li class="post-list-empty">Nothing here yet.</li>
 {% endfor %}
 </ol>
-

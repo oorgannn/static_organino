@@ -13,20 +13,23 @@
     <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/blog/feed.xml">
 </head>
 <body class="blog-shell">
-    <header id="header" class="blog-header">
-        <a class="logo blog-logo" href="/" aria-label="organ home">organ</a>
-        <nav aria-label="Blog navigation">
-            <a href="/">Home</a>
-            <a href="/blog/"{% if page.section == "all" %} aria-current="page"{% endif %}>Thoughts</a>
-            <a href="/blog/italiano/"{% if page.section == "italiano" %} aria-current="page"{% endif %}>Italiano</a>
-            <a href="/blog/english/"{% if page.section == "english" %} aria-current="page"{% endif %}>English</a>
-            <a href="/blog/about/"{% if page.section == "about" %} aria-current="page"{% endif %}>About</a>
-        </nav>
-    </header>
+    {% include site-header.html active="blog" %}
 
-    <main class="blog-main">
-        {{ content }}
-    </main>
+    <div class="blog-frame">
+        <aside class="blog-sidebar" aria-label="Blog navigation">
+            <p class="blog-sidebar-label">journal</p>
+            <nav>
+                <a href="/blog/"{% if page.section == "all" %} aria-current="page"{% endif %}>All</a>
+                <a href="/blog/italiano/"{% if page.section == "italiano" %} aria-current="page"{% endif %}>Italiano</a>
+                <a href="/blog/english/"{% if page.section == "english" %} aria-current="page"{% endif %}>English</a>
+                <a href="/blog/about/"{% if page.section == "about" %} aria-current="page"{% endif %}>About</a>
+            </nav>
+        </aside>
+
+        <main class="blog-main">
+            {{ content }}
+        </main>
+    </div>
 
     <footer class="blog-footer">
         <div class="footer-content">
@@ -53,4 +56,3 @@
     </script>
 </body>
 </html>
-
